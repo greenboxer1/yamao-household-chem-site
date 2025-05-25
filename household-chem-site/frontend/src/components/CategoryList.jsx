@@ -1,4 +1,4 @@
-import { MDBListGroup, MDBListGroupItem, MDBInput, MDBInputGroup } from 'mdb-react-ui-kit';
+import { MDBListGroup, MDBListGroupItem, MDBInput, MDBInputGroup, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 import { FaSearch } from 'react-icons/fa';
 import { memo, useCallback, useRef } from 'react';
 import { useFilter } from '../context/FilterContext';
@@ -79,48 +79,34 @@ const CategoryList = memo(({ categories }) => {
         </form>
       </div>
       
+      {/* Separator */}
+      <hr className="my-4" />
+      
       <div className="mb-4" style={{ paddingTop: '0.5rem' }}>
-        <h3 className="h5 fw-bold mb-2">Категории</h3>
-        <div className="position-relative">
-          <select
-            className="form-select text-truncate"
-            value={selectedCategory}
-            onChange={e => handleCategorySelect(e.target.value)}
-            style={{
-              minHeight: '45px',
-              height: 'auto',
-              fontSize: '1rem',
-              padding: '0.5rem 2.5rem 0.5rem 0.75rem',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              cursor: 'pointer',
-              appearance: 'none',
-              WebkitAppearance: 'none',
-              MozAppearance: 'none',
-              backgroundImage: 'none',
-              lineHeight: '1.5',
-              display: 'flex',
-              alignItems: 'center',
-              verticalAlign: 'middle'
-            }}
-            title={selectedCategory 
-              ? categories.find(c => c.id === selectedCategory)?.name || 'Все категории'
-              : 'Все категории'}
+        <h3 className="h5 fw-bold mb-3">Категории</h3>
+        <div className="d-flex flex-column gap-1">
+          <div 
+            className={`py-1 small ${!selectedCategory ? 'fw-bold' : ''}`}
+            onClick={() => handleCategorySelect(null)}
+            style={{ cursor: 'pointer' }}
           >
-          <option value="">Все категории</option>
-            <option value="">Все категории</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <div className="position-absolute end-0 top-0 h-100 d-flex align-items-center pe-3" style={{ pointerEvents: 'none' }}>
-            <i className="fas fa-chevron-down text-muted"></i>
+            Все категории
           </div>
+          {categories.map((category) => (
+            <div 
+              key={category.id}
+              className={`py-1 small ${selectedCategory === category.id ? 'fw-bold' : ''}`}
+              onClick={() => handleCategorySelect(category.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              {category.name}
+            </div>
+          ))}
         </div>
       </div>
+      
+      {/* Разделитель */}
+      <hr className="my-4" />
       
       <div className="mb-4" style={{ paddingTop: '0.5rem' }}>
         <h3 className="h5 fw-bold mb-2">Фильтр по цене</h3>
