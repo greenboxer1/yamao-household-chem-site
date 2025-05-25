@@ -1,0 +1,79 @@
+/* Main App Layout */
+.main-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Admin Panel */
+.admin-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Forms */
+.form-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Tables */
+.table-responsive {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  overflow: hidden;
+}
+
+/* Buttons */
+.btn-action {
+  margin: 0 0.25rem;
+}
+
+/* Alerts */
+.alert {
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+}
+
+/* Product cards */
+.product-card {
+  transition: transform 0.2s ease-in-out;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .table-responsive {
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
+  }
+}
+
+/* Utility classes */
+.min-vh-80 {
+  min-height: 80vh;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

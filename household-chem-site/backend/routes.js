@@ -1,7 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const { Product, Category } = require('./models');
+const { Product, Category, Admin } = require('./models');
 const { Op, Sequelize } = require('sequelize');
+const { auth, generateAuthToken } = require('./auth');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, 'public/images');
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage });
+
+// Admin login
+router.post('/admin/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const admin = await Admin.findOne({ where: { username } });
+    
+    if (!admin || !(await admin.validPassword(password))) {
+      return res.status(401).json({ error: 'Invalid login credentials' });
+    }
+    
+    const token = generateAuthToken(admin);
+    res.json({ token });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Server error during login' });
+  }
+});
+
+// Check admin auth status
+router.get('/admin/me', auth, (req, res) => {
+  res.json({ username: req.admin.username });
+});
 
 router.get('/categories', async (req, res) => {
     try {
@@ -148,6 +191,95 @@ router.get('/products', async (req, res) => {
         console.error('Error fetching products:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+// Admin protected routes
+router.use(auth);
+
+// Get all products for admin
+router.get('/admin/products', async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      include: [Category],
+      order: [['id', 'ASC']]
+    });
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
+// Create or update product
+router.post('/admin/products', upload.single('image'), async (req, res) => {
+  try {
+    const { id, name, price, discountPrice, weight, CategoryId } = req.body;
+    const image = req.file ? `/images/${req.file.filename}` : null;
+    
+    const productData = {
+      name,
+      price: parseFloat(price),
+      weight,
+      CategoryId: parseInt(CategoryId),
+      ...(discountPrice && { discountPrice: parseFloat(discountPrice) }),
+      ...(image && { image })
+    };
+
+    let product;
+    if (id) {
+      // Update existing product
+      product = await Product.findByPk(id);
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      
+      // If new image is uploaded, delete the old one
+      if (req.file && product.image) {
+        const fs = require('fs');
+        const path = require('path');
+        const imagePath = path.join(__dirname, 'public', product.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+      
+      await product.update(productData);
+    } else {
+      // Create new product
+      product = await Product.create(productData);
+    }
+    
+    res.json(product);
+  } catch (error) {
+    console.error('Error saving product:', error);
+    res.status(500).json({ error: 'Failed to save product' });
+  }
+});
+
+// Delete product
+router.delete('/admin/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    // Delete the associated image if it exists
+    if (product.image) {
+      const fs = require('fs');
+      const path = require('path');
+      const imagePath = path.join(__dirname, 'public', product.image);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+    
+    await product.destroy();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
 });
 
 module.exports = router;

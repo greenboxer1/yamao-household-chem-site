@@ -1,0 +1,73 @@
+/* Admin Login Styles */
+.admin-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+}
+
+.admin-login-card .card-header {
+  background-color: #4b6cb7;
+  color: white;
+  border-radius: 10px 10px 0 0 !important;
+  border: none;
+}
+
+.admin-login-card .form-control:focus {
+  border-color: #4b6cb7;
+  box-shadow: 0 0 0 0.25rem rgba(75, 108, 183, 0.25);
+}
+
+.admin-login-card .btn-primary {
+  background-color: #4b6cb7;
+  border: none;
+  padding: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.admin-login-card .btn-primary:hover {
+  background-color: #3a5a9a;
+  transform: translateY(-1px);
+}
+
+.admin-login-card .btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .admin-login-card {
+    margin: 0 15px;
+  }
+  
+  .admin-login-container {
+    padding: 10px;
+  }
+}
+
+/* Loading spinner */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 300px;
+}
+
+/* Error message */
+.error-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
