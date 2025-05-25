@@ -11,9 +11,11 @@ function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQu
   const limit = 10;
   const [searchTimeout, setSearchTimeout] = useState(null);
 
-  // Reset pagination when filters change
+  // Reset pagination and products when filters change
   useEffect(() => {
+    setProducts([]);
     setOffset(0);
+    setHasMore(true);
   }, [selectedCategory, priceFrom, priceTo, sortOrder, searchQuery]);
 
   // Fetch products with debounce
@@ -53,7 +55,11 @@ function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQu
         
         const newProducts = await res.json();
         
-        setHasMore(newProducts.length === limit);
+        // If we got fewer products than the limit, we've reached the end
+        const hasMoreItems = newProducts.length === limit;
+        setHasMore(hasMoreItems);
+        
+        // If offset is 0, replace the products, otherwise append to existing ones
         setProducts(prev => offset === 0 ? newProducts : [...prev, ...newProducts]);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -78,20 +84,32 @@ function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQu
 
 
 
+  // Handle infinite scroll with intersection observer
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMore) {
-          setOffset(prev => prev + limit);
-        }
-      },
-      { threshold: 1 }
-    );
-    if (loaderRef.current) observer.observe(loaderRef.current);
-    return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
+    const options = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0.1
     };
-  }, [hasMore]);
+
+    const observer = new IntersectionObserver((entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasMore && !isLoading) {
+        setOffset(prev => prev + limit);
+      }
+    }, options);
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [hasMore, isLoading, limit]);
 
   // Show loading indicator
   if (isLoading && products.length === 0) {
@@ -125,13 +143,16 @@ function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQu
       </MDBRow>
       
       {/* Infinite scroll loader */}
-      {hasMore && (
-        <div ref={loaderRef} className="text-center py-4">
+      <div ref={loaderRef} className="text-center py-4">
+        {isLoading && hasMore && (
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Загрузка...</span>
           </div>
-        </div>
-      )}
+        )}
+        {!hasMore && products.length > 0 && (
+          <p className="text-muted">Показаны все товары</p>
+        )}
+      </div>
     </MDBContainer>
   );
 }

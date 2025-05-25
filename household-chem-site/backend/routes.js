@@ -133,8 +133,15 @@ router.get('/products', async (req, res) => {
 
         console.log('Query options:', JSON.stringify(queryOptions, null, 2));
         
-        const products = await Product.findAll(queryOptions);
-        console.log(`Found ${products.length} products matching the criteria`);
+        // Fetch products with pagination
+        const { count, rows: products } = await Product.findAndCountAll({
+            ...queryOptions,
+            limit: parseInt(limit, 10),
+            offset: parseInt(offset, 10),
+            distinct: true // Important for getting correct count with includes
+        });
+        
+        console.log(`Found ${products.length} of ${count} total products matching the criteria`);
         
         res.json(products);
     } catch (error) {
