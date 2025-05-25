@@ -28,13 +28,19 @@ function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQu
         if (priceTo) params.append('priceTo', priceTo);
         if (sortOrder) params.append('sortOrder', sortOrder);
         if (searchQuery && searchQuery.trim() !== '') {
-            // Remove extra spaces and normalize the search query
-            const normalizedSearch = searchQuery.trim().replace(/\s+/g, ' ');
-            // Ensure proper encoding of the search term
-            const encodedSearch = encodeURIComponent(normalizedSearch);
-            params.append('search', encodedSearch);
-            console.log('Searching for (normalized):', normalizedSearch);
-            console.log('Searching for (encoded):', encodedSearch);
+            // Normalize the search query - trim and replace multiple spaces
+            const normalizedSearch = searchQuery
+                .trim()
+                .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+                .toLowerCase();
+            
+            // Add to params
+            params.append('search', normalizedSearch);
+            console.log('Search query (normalized):', normalizedSearch);
+            
+            // When searching, we want to search across all categories
+            params.delete('categoryId');
         }
         
         params.append('limit', limit);

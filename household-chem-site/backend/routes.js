@@ -12,58 +12,71 @@ router.get('/products', async (req, res) => {
     const { categoryId, priceFrom, priceTo, sortOrder, search, limit = 10, offset = 0 } = req.query;
     const where = {};
     
-    // Фильтр по категории
-    if (categoryId) where.CategoryId = categoryId;
+    // Фильтр по категории (игнорируем при поиске)
+    if (categoryId && (!search || search.trim() === '')) {
+        where.CategoryId = categoryId;
+    }
     
     // Поиск по названию (регистронезависимый поиск по части названия)
     if (search && search.trim() !== '') {
-        const searchTerm = `%${search.trim().toLowerCase()}%`;
+        const searchTerm = search.trim();
         console.log('Search term received:', searchTerm);
         
+        // Create a simple but effective search condition
         where[Op.and] = where[Op.and] || [];
         
-        // Use parameterized query to prevent SQL injection
-        where[Op.and].push(
-            Sequelize.where(
-                Sequelize.fn('LOWER', Sequelize.col('Product.name')),
-                'LIKE',
-                searchTerm
-            )
-        );
+        // Split search term into words and search for each word
+        const searchWords = searchTerm.toLowerCase().split(/\s+/).filter(Boolean);
+        
+        const searchConditions = searchWords.map(word => ({
+            [Op.or]: [
+                { name: { [Op.like]: `%${word}%` } },
+                { name: { [Op.like]: `%${word.charAt(0).toUpperCase() + word.slice(1)}%` } }
+            ]
+        }));
+        
+        // Combine all search conditions with AND
+        where[Op.and].push({
+            [Op.and]: searchConditions
+        });
+        
+        console.log('Search conditions:', JSON.stringify(where, null, 2));
     }
     
-    console.log('Final WHERE clause:', JSON.stringify(where, null, 2));
-    
     // Фильтрация по цене (учитываем как discountPrice, так и обычную цену)
-    const priceConditions = [];
-    
-    // Условие для товаров со скидкой
-    const discountPriceCondition = {};
-    if (priceFrom) discountPriceCondition[Op.gte] = parseFloat(priceFrom);
-    if (priceTo) discountPriceCondition[Op.lte] = parseFloat(priceTo);
-    
-    // Условие для товаров без скидки
-    const regularPriceCondition = {};
-    if (priceFrom) regularPriceCondition[Op.gte] = parseFloat(priceFrom);
-    if (priceTo) regularPriceCondition[Op.lte] = parseFloat(priceTo);
-    
     if (priceFrom || priceTo) {
-        where[Op.or] = [
-            // Товары со скидкой
-            {
-                discountPrice: { [Op.ne]: null },
-                ...(Object.keys(discountPriceCondition).length > 0 && { 
-                    discountPrice: discountPriceCondition 
-                })
-            },
-            // Товары без скидки
-            {
-                discountPrice: null,
-                ...(Object.keys(regularPriceCondition).length > 0 && { 
-                    price: regularPriceCondition 
-                })
-            }
-        ];
+        where[Op.and] = where[Op.and] || [];
+        
+        const priceConditions = [];
+        
+        // Условие для минимальной цены
+        if (priceFrom) {
+            const minPrice = parseFloat(priceFrom);
+            priceConditions.push({
+                [Op.or]: [
+                    { '$Product.price$': { [Op.gte]: minPrice } },
+                    { '$Product.discountPrice$': { [Op.gte]: minPrice } }
+                ]
+            });
+        }
+        
+        // Условие для максимальной цены
+        if (priceTo) {
+            const maxPrice = parseFloat(priceTo);
+            priceConditions.push({
+                [Op.or]: [
+                    { '$Product.price$': { [Op.lte]: maxPrice } },
+                    { '$Product.discountPrice$': { [Op.lte]: maxPrice } }
+                ]
+            });
+        }
+        
+        // Добавляем все условия цены в основной where
+        if (priceConditions.length > 0) {
+            where[Op.and].push({
+                [Op.and]: priceConditions
+            });
+        }
     }
 
     try {
@@ -84,20 +97,34 @@ router.get('/products', async (req, res) => {
             order = [['id', 'ASC']];
         }
 
-        const products = await Product.findAll({
+        // Build the query options
+        const queryOptions = {
             where,
             limit: parseInt(limit, 10),
             offset: parseInt(offset, 10),
-            order,
             include: [
                 {
                     model: Category,
-                    attributes: ['id', 'name']
+                    attributes: ['id', 'name'],
+                    required: false
                 }
             ],
-            // Сортировка по умолчанию (по id, можно изменить на нужное поле)
-            order: sortOrder ? undefined : [['id', 'ASC']]
-        });
+            // Add sorting if specified
+            order: sortOrder ? order : [['id', 'ASC']],
+            // Enable raw query to see what's being executed
+            logging: (sql) => {
+                console.log('Executing SQL:', sql);
+            },
+            // Force case-insensitive search
+            collate: 'NOCASE',
+            // Use subquery to improve performance
+            subQuery: false
+        };
+
+        console.log('Query options:', JSON.stringify(queryOptions, null, 2));
+        
+        const products = await Product.findAll(queryOptions);
+        console.log(`Found ${products.length} products matching the criteria`);
         
         res.json(products);
     } catch (error) {
