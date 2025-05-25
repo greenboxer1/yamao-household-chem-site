@@ -9,6 +9,7 @@ function App() {
   const [priceFrom, setPriceFrom] = useState('');
   const [priceTo, setPriceTo] = useState('');
   const [sortOrder, setSortOrder] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetch('/api/categories')
@@ -30,6 +31,8 @@ function App() {
             setPriceTo={setPriceTo}
             sortOrder={sortOrder}
             setSortOrder={setSortOrder}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
         </MDBCol>
         <MDBCol md="9">
@@ -38,6 +41,7 @@ function App() {
             priceFrom={priceFrom}
             priceTo={priceTo}
             sortOrder={sortOrder}
+            searchQuery={searchQuery}
           />
         </MDBCol>
       </MDBRow>

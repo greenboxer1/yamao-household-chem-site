@@ -8,13 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "mdb-react-ui-kit": "^8.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "mdb-react-ui-kit": "^8.0.0"
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0",
     "@vitejs/plugin-react": "^4.0.4",
-    "sass": "^1.64.1"
+    "sass": "^1.64.1",
+    "vite": "^5.0.0"
   }
 }
