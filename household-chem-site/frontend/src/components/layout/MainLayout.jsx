@@ -177,7 +177,7 @@ const MainLayout = ({ children }) => {
 
       {/* Footer */}
       <MDBFooter className="bg-light text-center text-lg-start mt-auto">
-        <MDBContainer className="py-5 px-3 px-md-4 px-xxl-5">
+        <MDBContainer className="pt-4 pb-5 px-3 px-md-4 px-xxl-5">
           <MDBRow className="g-4">
             <MDBCol lg="4" md="6" className="mb-4 mb-lg-0">
               <h5 className="text-uppercase fw-bold mb-4">Контакты</h5>

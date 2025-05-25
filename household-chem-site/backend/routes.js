@@ -52,11 +52,7 @@ router.get('/categories', async (req, res) => {
             order: [['name', 'ASC']] // Sort categories alphabetically
         });
         
-        // Add 'All' category at the beginning
-        res.json([
-            { id: 'all', name: 'Все' },
-            ...categories
-        ]);
+        res.json(categories);
     } catch (error) {
         console.error('Error fetching categories:', error);
         res.status(500).json({ error: 'Failed to fetch categories' });

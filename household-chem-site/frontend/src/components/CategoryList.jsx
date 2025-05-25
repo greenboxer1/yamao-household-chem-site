@@ -41,27 +41,31 @@ const CategoryList = memo(({ categories }) => {
   }, [setSelectedCategory]);
 
   return (
-    <div className="p-4 bg-white shadow-sm rounded-3" style={{ width: '100%' }}>
-      <div className="mb-4">
-        <h2 className="h4 fw-bold mb-3">Поиск</h2>
+    <div className="bg-white shadow-sm rounded-3 h-100 w-100" style={{ 
+      overflowY: 'auto',
+      padding: '1.5rem 1.25rem'
+    }}>
+      <div className="mb-3">
+        <h2 className="h5 fw-bold mb-3">Поиск</h2>
         <form onSubmit={handleSearch}>
-          <MDBInputGroup className="mb-3">
+          <MDBInputGroup className="mb-0">
             <MDBInput 
               ref={searchInputRef}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Название товара..."
               className="py-2"
-              style={{ height: '38px' }}
+              style={{ height: '45px', fontSize: '1rem' }}
               autoComplete="off"
             />
             <button 
               type="submit" 
               className="btn btn-primary d-flex align-items-center"
               style={{
-                height: '38px',
-                lineHeight: '1',
-                padding: '0.375rem 0.75rem'
+                height: '45px',
+                lineHeight: '1.5',
+                padding: '0.5rem 1rem',
+                fontSize: '1rem'
               }}
               onClick={(e) => {
                 e.preventDefault();
@@ -75,21 +79,51 @@ const CategoryList = memo(({ categories }) => {
         </form>
       </div>
       
-      <h2 className="h4 fw-bold mb-3">Категории</h2>
-      <MDBListGroup>
-        {categories.map(category => (
-          <MDBListGroupItem
-            key={category.id}
-            active={selectedCategory === (category.id === 'all' ? null : category.id)}
-            onClick={() => handleCategorySelect(category.id === 'all' ? null : category.id)}
-            className="cursor-pointer"
+      <div className="mb-4" style={{ paddingTop: '0.5rem' }}>
+        <h3 className="h5 fw-bold mb-2">Категории</h3>
+        <div className="position-relative">
+          <select
+            className="form-select text-truncate"
+            value={selectedCategory}
+            onChange={e => handleCategorySelect(e.target.value)}
+            style={{
+              minHeight: '45px',
+              height: 'auto',
+              fontSize: '1rem',
+              padding: '0.5rem 2.5rem 0.5rem 0.75rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              cursor: 'pointer',
+              appearance: 'none',
+              WebkitAppearance: 'none',
+              MozAppearance: 'none',
+              backgroundImage: 'none',
+              lineHeight: '1.5',
+              display: 'flex',
+              alignItems: 'center',
+              verticalAlign: 'middle'
+            }}
+            title={selectedCategory 
+              ? categories.find(c => c.id === selectedCategory)?.name || 'Все категории'
+              : 'Все категории'}
           >
-            {category.name}
-          </MDBListGroupItem>
-        ))}
-      </MDBListGroup>
-      <div className="mt-4">
-        <h3 className="h5 fw-bold mb-3">Фильтр по цене</h3>
+          <option value="">Все категории</option>
+            <option value="">Все категории</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          <div className="position-absolute end-0 top-0 h-100 d-flex align-items-center pe-3" style={{ pointerEvents: 'none' }}>
+            <i className="fas fa-chevron-down text-muted"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mb-4" style={{ paddingTop: '0.5rem' }}>
+        <h3 className="h5 fw-bold mb-2">Фильтр по цене</h3>
         <div className="d-flex gap-2 mb-3">
           <MDBInputGroup className="flex-grow-1">
             <MDBInput
@@ -107,23 +141,27 @@ const CategoryList = memo(({ categories }) => {
               placeholder="От"
               className="py-2"
               style={{ 
-                height: '38px',
+                height: '45px',
+                fontSize: '1rem',
                 borderTopRightRadius: '0',
                 borderBottomRightRadius: '0',
                 borderRight: 'none',
                 WebkitAppearance: 'none',
                 MozAppearance: 'textfield',
-                margin: 0
+                margin: 0,
+                padding: '0.5rem 0.75rem'
               }}
             />
             <span className="input-group-text bg-light" style={{
               borderLeft: 'none',
               display: 'flex',
               alignItems: 'center',
-              padding: '0.375rem 0.75rem',
-              height: '38px'
+              padding: '0 0.75rem',
+              height: '45px',
+              fontSize: '1rem'
             }}>₽</span>
           </MDBInputGroup>
+          
           <MDBInputGroup className="flex-grow-1">
             <MDBInput
               ref={priceToRef}
@@ -140,43 +178,50 @@ const CategoryList = memo(({ categories }) => {
               placeholder="До"
               className="py-2"
               style={{ 
-                height: '38px',
+                height: '45px',
+                fontSize: '1rem',
                 borderTopRightRadius: '0',
                 borderBottomRightRadius: '0',
                 borderRight: 'none',
                 WebkitAppearance: 'none',
                 MozAppearance: 'textfield',
-                margin: 0
+                margin: 0,
+                padding: '0.5rem 0.75rem'
               }}
             />
             <span className="input-group-text bg-light" style={{
               borderLeft: 'none',
               display: 'flex',
               alignItems: 'center',
-              padding: '0.375rem 0.75rem',
-              height: '38px'
+              padding: '0 0.75rem',
+              height: '45px',
+              fontSize: '1rem'
             }}>₽</span>
           </MDBInputGroup>
         </div>
+        
         {(priceFrom || priceTo) && (
           <button 
             onClick={() => {
               setPriceFrom('');
               setPriceTo('');
             }}
-            className="btn btn-sm btn-outline-secondary w-100"
+            className="btn btn-outline-secondary w-100 mt-3"
+            style={{ padding: '0.5rem 0.75rem' }}
           >
             Сбросить фильтр цены
           </button>
         )}
       </div>
-      <div className="mt-4">
-        <h3 className="h5 fw-bold mb-3">Сортировка</h3>
+      
+      <div style={{ paddingTop: '0.5rem' }}>
+        <h3 className="h5 fw-bold mb-2">Сортировка</h3>
         <select
-          className="form-select"
+          className="form-select py-2"
           value={sortOrder}
           onChange={e => setSortOrder(e.target.value)}
           onFocus={(e) => e.target.blur()} // Prevent focus to avoid mobile keyboard
+          style={{ minHeight: '45px', fontSize: '1rem' }}
         >
           {sortOptions.map(option => (
             <option key={option.value} value={option.value}>

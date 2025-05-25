@@ -135,27 +135,27 @@ function ProductGrid() {
   }
 
   return (
-    <MDBContainer>
-      <MDBRow>
+    <div className="w-100">
+      <div className="row g-3 g-xxl-4">
         {products.map(product => (
-          <MDBCol md="4" key={product.id} className="mb-4">
+          <div key={product.id} className="col-12 col-sm-6 col-lg-4">
             <ProductCard product={product} />
-          </MDBCol>
+          </div>
         ))}
-      </MDBRow>
+      </div>
       
       {/* Infinite scroll loader */}
       <div ref={loaderRef} className="text-center py-4">
         {isLoading && hasMore && (
-          <div className="spinner-border text-primary" role="status">
+          <div className="spinner-border spinner-border-sm text-primary" role="status">
             <span className="visually-hidden">Загрузка...</span>
           </div>
         )}
         {!hasMore && products.length > 0 && (
-          <p className="text-muted">Показаны все товары</p>
+          <p className="text-muted small mb-0">Показаны все товары</p>
         )}
       </div>
-    </MDBContainer>
+    </div>
   );
 }
 

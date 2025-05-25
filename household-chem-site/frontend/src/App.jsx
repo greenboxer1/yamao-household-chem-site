@@ -57,16 +57,18 @@ const App = () => {
               element={
                 <MainApp>
                   <div className="main-app">
-                    <MDBContainer fluid className="my-5">
-                      <MDBRow>
-                        <MDBCol md="4" lg="3" xl="3">
-                          <CategoryList categories={categories} />
-                        </MDBCol>
-                        <MDBCol md="8" lg="9" xl="9">
+                    <div className="container-fluid py-3 px-4 px-xxl-5">
+                      <div className="row gx-4 gx-xxl-5">
+                        <div className="col-12 col-md-5 col-lg-4 col-xl-4">
+                          <div className="sticky-top" style={{ top: '1rem' }}>
+                            <CategoryList categories={categories} />
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-7 col-lg-8 col-xl-8">
                           <ProductGrid categories={categories} />
-                        </MDBCol>
-                      </MDBRow>
-                    </MDBContainer>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </MainApp>
               } 
