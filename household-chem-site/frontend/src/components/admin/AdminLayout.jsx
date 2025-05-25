@@ -75,7 +75,7 @@ const AdminLayout = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
       <MDBNavbar expand="lg" light bgColor="light" className="shadow-sm">
-        <MDBContainer fluid>
+        <MDBContainer className="px-3 px-md-4 px-xxl-5">
           <MDBNavbarBrand tag={Link} to="/admin/products" className="fw-bold">
             <MDBIcon icon="user-shield" className="me-2" />
             Панель администратора
@@ -118,12 +118,14 @@ const AdminLayout = () => {
         </MDBContainer>
       </MDBNavbar>
 
-      <MDBContainer fluid className="py-4 flex-grow-1">
-        <Outlet />
-      </MDBContainer>
+      <div className="flex-grow-1 py-4">
+        <MDBContainer className="px-3 px-md-4 px-xxl-5">
+          <Outlet />
+        </MDBContainer>
+      </div>
 
       <footer className="bg-light py-3 mt-auto">
-        <MDBContainer fluid>
+        <MDBContainer className="px-3 px-md-4 px-xxl-5">
           <div className="text-center text-muted">
             &copy; {new Date().getFullYear()} Панель управления
           </div>

@@ -26,6 +26,44 @@ const EditableField = ({ value, onChange, type = 'text', className = '' }) => {
 };
 
 const ProductManagement = () => {
+  // Add custom styles
+  const styles = `
+    .table {
+      font-size: 0.8125rem;
+    }
+    
+    .table th, .table td {
+      padding: 0.4rem 0.5rem;
+    }
+    
+    .form-control, .form-select {
+      font-size: 0.8125rem;
+      padding: 0.2rem 0.4rem;
+    }
+    
+    .btn {
+      font-size: 0.8125rem;
+      padding: 0.2rem 0.4rem;
+    }
+    
+    .btn-sm {
+      padding: 0.15rem 0.3rem;
+    }
+    
+    .card-header {
+      padding: 0.75rem 1rem;
+    }
+    
+    .table-responsive {
+      margin: 0 -0.5rem;
+      padding: 0 0.5rem;
+    }
+    
+    .editable-field {
+      width: 100%;
+      min-width: 100px;
+    }
+  `;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [products, setProducts] = useState([]);
@@ -230,17 +268,44 @@ const ProductManagement = () => {
   };
 
   return (
-    <div className="container-fluid p-0">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="mb-0">Управление товарами</h2>
-        <button 
-          className="btn btn-primary"
-          onClick={() => setIsAdding(true)}
-          disabled={isAdding}
-        >
-          <MDBIcon icon="plus" className="me-2" />
-          Добавить товар
-        </button>
+    <div className="container-fluid p-0" style={{ '--bs-gutter-x': '0.5rem' }}>
+      <style>{styles}</style>
+      {/* Search Bar with Add Button */}
+      <div className="card mb-4">
+        <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <h5 className="mb-3 mb-md-0">Управление товарами</h5>
+          <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+            <div className="input-group" style={{ minWidth: '250px' }}>
+              <span className="input-group-text">
+                <MDBIcon icon="search" />
+              </span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Поиск по названию или категории..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <button 
+                  className="btn btn-outline-secondary" 
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                >
+                  <MDBIcon icon="times" />
+                </button>
+              )}
+            </div>
+            <button 
+              className="btn btn-primary ms-md-2"
+              onClick={() => setIsAdding(true)}
+              disabled={isAdding}
+            >
+              <MDBIcon icon="plus" className="me-1" />
+              Добавить товар
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Add New Product Form */}
@@ -339,35 +404,7 @@ const ProductManagement = () => {
         </div>
       )}
 
-      {/* Search Bar */}
-      <div className="card mb-4">
-        <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-          <h5 className="mb-3 mb-md-0">Управление товарами</h5>
-          <div className="w-100 w-md-auto mt-2 mt-md-0">
-            <div className="input-group">
-              <span className="input-group-text">
-                <MDBIcon icon="search" />
-              </span>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Поиск по названию или категории..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button 
-                  className="btn btn-outline-secondary" 
-                  type="button"
-                  onClick={() => setSearchTerm('')}
-                >
-                  <MDBIcon icon="times" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       {/* Products Table */}
       {loading ? (
@@ -389,11 +426,11 @@ const ProductManagement = () => {
                 <tr>
                   <th>ID</th>
                   <th>Изображение</th>
-                  <th>Название</th>
+                  <th style={{ minWidth: '200px' }}>Название</th>
                   <th>Цена</th>
                   <th>Цена со скидкой</th>
                   <th>Вес</th>
-                  <th>Категория</th>
+                  <th style={{ minWidth: '180px' }}>Категория</th>
                   <th className="text-end">Действия</th>
                 </tr>
               </MDBTableHead>
@@ -447,6 +484,7 @@ const ProductManagement = () => {
                         value={product.Category?.id || product.categoryId || ''}
                         onChange={(e) => handleInputChange(product.id, 'categoryId', e.target.value)}
                         required
+                        style={{ minWidth: '150px' }}
                       >
                         <option value="" disabled>Выберите категорию</option>
                         {categories.map(category => {
@@ -461,24 +499,25 @@ const ProductManagement = () => {
                       </select>
                     </td>
                     <td className="text-end">
-                      <div className="btn-group">
-                        <MDBBtn 
-                          color="success" 
-                          size="sm" 
+                      <div className="btn-group btn-group-sm" role="group">
+                        <button 
+                          type="button"
+                          className="btn btn-success"
                           onClick={() => handleSave(product)}
                           title="Сохранить"
+                          style={{ width: '32px' }}
                         >
-                          <MDBIcon icon="check" size="sm" />
-                        </MDBBtn>
-                        <MDBBtn 
-                          color="danger" 
-                          size="sm" 
+                          <MDBIcon icon="check" />
+                        </button>
+                        <button 
+                          type="button"
+                          className="btn btn-danger"
                           onClick={() => handleDelete(product.id)}
                           title="Удалить"
-                          className="ms-1"
+                          style={{ width: '32px' }}
                         >
-                          <MDBIcon icon="trash" size="sm" />
-                        </MDBBtn>
+                          <MDBIcon icon="trash" />
+                        </button>
                       </div>
                     </td>
                   </tr>

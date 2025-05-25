@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid px-3 px-md-4 px-xxl-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="mb-0">Dashboard</h2>
         <Link to="/admin/products/new" className="btn btn-primary">

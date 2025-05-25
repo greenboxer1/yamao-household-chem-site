@@ -48,7 +48,7 @@ const MainLayout = ({ children }) => {
     <div className="d-flex flex-column min-vh-100">
       {/* Header */}
       <header className={`sticky-top bg-white ${isScrolled ? 'shadow-sm' : ''} w-100 py-2`}>
-        <MDBContainer>
+        <MDBContainer className="px-3 px-md-4 px-xxl-5">
           <div className="d-flex justify-content-between align-items-center">
             {/* Logo */}
             <Link to="/" className="text-decoration-none d-flex align-items-center">
@@ -233,7 +233,7 @@ const MainLayout = ({ children }) => {
               </MDBCol>
             </MDBRow>
           </MDBContainer>
-        </MDBFooter>
+      </MDBFooter>
       </div>
     );
   }
