@@ -26,11 +26,13 @@ const EditableField = ({ value, onChange, type = 'text', className = '' }) => {
 };
 
 const ProductManagement = () => {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [imagePreview, setImagePreview] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: '',
@@ -39,12 +41,26 @@ const ProductManagement = () => {
     categoryId: '',
     image: null
   });
-  const [imagePreview, setImagePreview] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, []);
+
+  // Filter products based on search term
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredProducts(products);
+    } else {
+      const searchLower = searchTerm.toLowerCase();
+      const filtered = products.filter(product => 
+        product.name.toLowerCase().includes(searchLower) ||
+        (product.Category?.name?.toLowerCase().includes(searchLower) || '')
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchTerm, products]);
 
   const fetchProducts = async () => {
     try {
@@ -53,12 +69,14 @@ const ProductManagement = () => {
         api.get('/admin/products'),
         api.get('/categories')
       ]);
-      
-      setProducts(productsRes.data);
-      setCategories(categoriesRes.data);
+      const productsData = Array.isArray(productsRes.data) ? productsRes.data : [];
+      setProducts(productsData);
+      setFilteredProducts(productsData);
+      setCategories(categoriesRes.data || []);
+      setError('');
     } catch (error) {
-      setError('Ошибка при загрузке данных');
       console.error('Error fetching data:', error);
+      setError('Ошибка при загрузке данных: ' + (error.response?.data?.error || error.message));
     } finally {
       setLoading(false);
     }
@@ -211,25 +229,8 @@ const ProductManagement = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
-        <MDBSpinner color="primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-danger m-3">
-        <MDBIcon icon="exclamation-triangle" className="me-2" />
-        {error}
-      </div>
-    );
-  }
-
   return (
-    <div className="container-fluid">
+    <div className="container-fluid p-0">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="mb-0">Управление товарами</h2>
         <button 
@@ -338,12 +339,53 @@ const ProductManagement = () => {
         </div>
       )}
 
+      {/* Search Bar */}
+      <div className="card mb-4">
+        <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <h5 className="mb-3 mb-md-0">Управление товарами</h5>
+          <div className="w-100 w-md-auto mt-2 mt-md-0">
+            <div className="input-group">
+              <span className="input-group-text">
+                <MDBIcon icon="search" />
+              </span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Поиск по названию или категории..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <button 
+                  className="btn btn-outline-secondary" 
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                >
+                  <MDBIcon icon="times" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Products Table */}
-      <div className="card">
-        <div className="card-body">
-          <div className="table-responsive">
-            <MDBTable hover>
-              <MDBTableHead>
+      {loading ? (
+        <div className="text-center my-5">
+          <MDBSpinner className="me-2" />
+          Загрузка...
+        </div>
+      ) : error ? (
+        <div className="alert alert-danger">{error}</div>
+      ) : (
+        <div className="table-responsive">
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-4">
+              {searchTerm ? 'Товары не найдены' : 'Нет доступных товаров'}
+            </div>
+          ) : (
+            <MDBTable hover responsive className="align-middle">
+              <MDBTableHead className="table-light">
                 <tr>
                   <th>ID</th>
                   <th>Изображение</th>
@@ -356,7 +398,7 @@ const ProductManagement = () => {
                 </tr>
               </MDBTableHead>
               <MDBTableBody>
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <tr key={product.id}>
                     <td>{product.id}</td>
                     <td>
@@ -441,19 +483,11 @@ const ProductManagement = () => {
                     </td>
                   </tr>
                 ))}
-                {products.length === 0 && (
-                  <tr>
-                    <td colSpan="7" className="text-center py-4 text-muted">
-                      <MDBIcon icon="box-open" size="3x" className="mb-3 d-block mx-auto" />
-                      Товары не найдены
-                    </td>
-                  </tr>
-                )}
               </MDBTableBody>
             </MDBTable>
-          </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

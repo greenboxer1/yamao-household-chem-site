@@ -74,41 +74,46 @@ const AdminLayout = () => {
 
   return (
     <div className="d-flex flex-column min-vh-100">
-      <MDBNavbar expand="lg" light bgColor="light">
+      <MDBNavbar expand="lg" light bgColor="light" className="shadow-sm">
         <MDBContainer fluid>
-          <MDBNavbarBrand tag={Link} to="/admin">
+          <MDBNavbarBrand tag={Link} to="/admin/products" className="fw-bold">
             <MDBIcon icon="user-shield" className="me-2" />
             Панель администратора
           </MDBNavbarBrand>
-          <MDBNavbarToggler
-            type="button"
-            data-mdb-toggle="collapse"
-            data-mdb-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <MDBIcon icon="bars" fas />
-          </MDBNavbarToggler>
-          <MDBCollapse navbar id="navbarNav">
-            <MDBNavbarNav className="me-auto mb-2 mb-lg-0">
+          
+          <div className="d-flex align-items-center">
+            <MDBBtn 
+              color="outline-danger" 
+              size="sm" 
+              className="me-2 d-flex align-items-center"
+              onClick={handleLogout}
+            >
+              <MDBIcon icon="sign-out-alt" className="me-1" />
+              <span className="d-none d-md-inline">Выйти</span>
+            </MDBBtn>
+            
+            <MDBNavbarToggler
+              type="button"
+              data-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              onClick={() => setIsOpen(!isOpen)}
+              className="border-0"
+            >
+              <MDBIcon icon={isOpen ? 'times' : 'bars'} />
+            </MDBNavbarToggler>
+          </div>
+          
+          <MDBCollapse navbar isOpen={isOpen} className="justify-content-end">
+            <MDBNavbarNav className="mb-2 mb-lg-0">
               <MDBNavbarItem>
-                <MDBNavbarLink 
-                  tag={Link}
-                  to="/admin/products"
-                  active={window.location.pathname.startsWith('/admin')}
-                >
+                <MDBNavbarLink active aria-current="page" tag={Link} to="/admin/products">
                   <MDBIcon icon="box" className="me-1" />
-                  Управление товарами
+                  Товары
                 </MDBNavbarLink>
               </MDBNavbarItem>
             </MDBNavbarNav>
-            <div className="d-flex">
-              <MDBBtn color="danger" size="sm" onClick={handleLogout}>
-                <MDBIcon fas icon="sign-out-alt" className="me-2" />
-                Выйти
-              </MDBBtn>
-            </div>
           </MDBCollapse>
         </MDBContainer>
       </MDBNavbar>
