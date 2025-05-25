@@ -26,7 +26,9 @@ function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQu
         if (selectedCategory) params.append('categoryId', selectedCategory);
         if (priceFrom) params.append('priceFrom', priceFrom);
         if (priceTo) params.append('priceTo', priceTo);
-        if (sortOrder) params.append('sortOrder', sortOrder);
+        if (sortOrder && (sortOrder === 'asc' || sortOrder === 'desc')) {
+            params.append('sortOrder', sortOrder);
+        }
         if (searchQuery && searchQuery.trim() !== '') {
             // Normalize the search query - trim and replace multiple spaces
             const normalizedSearch = searchQuery

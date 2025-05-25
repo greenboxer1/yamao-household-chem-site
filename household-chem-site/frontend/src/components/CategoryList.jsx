@@ -14,6 +14,12 @@ function CategoryList({
   searchQuery,
   setSearchQuery
 }) {
+  // Handle category selection
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId);
+    // Reset search when selecting a category
+    setSearchQuery('');
+  };
   const sortOptions = [
     { text: 'Сначала дешевые', value: 'asc' },
     { text: 'Сначала дорогие', value: 'desc' }
@@ -38,14 +44,14 @@ function CategoryList({
       
       <h2 className="h4 fw-bold mb-3">Категории</h2>
       <MDBListGroup>
-        {categories.map(cat => (
+        {categories.map(category => (
           <MDBListGroupItem
-            key={cat.id}
-            active={selectedCategory === cat.id}
-            onClick={() => setSelectedCategory(cat.id)}
+            key={category.id}
+            active={selectedCategory === (category.id === 'all' ? null : category.id)}
+            onClick={() => handleCategorySelect(category.id === 'all' ? null : category.id)}
             className="cursor-pointer"
           >
-            {cat.name}
+            {category.name}
           </MDBListGroupItem>
         ))}
       </MDBListGroup>

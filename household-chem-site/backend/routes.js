@@ -4,8 +4,20 @@ const { Product, Category } = require('./models');
 const { Op, Sequelize } = require('sequelize');
 
 router.get('/categories', async (req, res) => {
-    const categories = await Category.findAll();
-    res.json(categories);
+    try {
+        const categories = await Category.findAll({
+            order: [['name', 'ASC']] // Sort categories alphabetically
+        });
+        
+        // Add 'All' category at the beginning
+        res.json([
+            { id: 'all', name: 'Все' },
+            ...categories
+        ]);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({ error: 'Failed to fetch categories' });
+    }
 });
 
 router.get('/products', async (req, res) => {
@@ -81,19 +93,17 @@ router.get('/products', async (req, res) => {
 
     try {
         let order = [];
-        if (sortOrder) {
+        if (sortOrder === 'asc' || sortOrder === 'desc') {
             // Сортировка по цене (учитываем скидочную цену, если она есть)
             order = [
                 [
-                    Sequelize.fn('COALESCE', 
-                        Sequelize.col('Product.discountPrice'), 
-                        Sequelize.col('Product.price')
-                    ),
+                    // Use COALESCE to prioritize discountPrice, fallback to price
+                    Sequelize.literal('COALESCE(`Product`.`discountPrice`, `Product`.`price`)'),
                     sortOrder.toUpperCase()
                 ]
             ];
         } else {
-            // Сортировка по умолчанию (можно изменить на нужное поле)
+            // Default sorting
             order = [['id', 'ASC']];
         }
 
