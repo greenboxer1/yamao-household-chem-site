@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { MDBContainer, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 import ProductCard from './ProductCard';
+import { useFilter } from '../context/FilterContext';
 
-function ProductGrid({ selectedCategory, priceFrom, priceTo, sortOrder, searchQuery }) {
+function ProductGrid() {
+  const { selectedCategory, priceFrom, priceTo, sortOrder, searchQuery } = useFilter();
   const [products, setProducts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
