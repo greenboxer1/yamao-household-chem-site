@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f6f8;
+}
+
+.price {
+  .original-price {
+    text-decoration: line-through;
+    color: #757575;
+    margin-right: 8px;
+  }
+  .discount-price {
+    color: #e91e63;
+    font-weight: 600;
+  }
+}
+
+.loader {
+  text-align: center;
+  padding: 24px;
+  color: #6200ea;
+  font-size: 1.1rem;
+  font-weight: 500;
+  animation: pulse 1.5s infinite;
+}
+
+.form-select {
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:focus {
+    border-color: #6200ea;
+    box-shadow: 0 0 0 3px rgba(98, 0, 234, 0.2);
+    outline: none;
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
