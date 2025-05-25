@@ -86,18 +86,26 @@ const CategoryList = memo(({ categories }) => {
         <h3 className="h5 fw-bold mb-3">Категории</h3>
         <div className="d-flex flex-column gap-1">
           <div 
-            className={`py-1 small ${!selectedCategory ? 'fw-bold' : ''}`}
+            className={`py-1 small ${!selectedCategory ? 'fw-semibold' : ''}`}
             onClick={() => handleCategorySelect(null)}
-            style={{ cursor: 'pointer' }}
+            style={{ 
+              cursor: 'pointer',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale'
+            }}
           >
             Все категории
           </div>
           {categories.map((category) => (
             <div 
               key={category.id}
-              className={`py-1 small ${selectedCategory === category.id ? 'fw-bold' : ''}`}
+              className={`py-1 small ${selectedCategory === category.id ? 'fw-semibold' : ''}`}
               onClick={() => handleCategorySelect(category.id)}
-              style={{ cursor: 'pointer' }}
+              style={{ 
+                cursor: 'pointer',
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale'
+              }}
             >
               {category.name}
             </div>
