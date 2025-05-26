@@ -142,13 +142,11 @@ const ProductManagement = () => {
               Category: category || product.Category // Preserve existing category if not found
             };
           }
-          // For other fields, preserve the existing category
+          // For other fields, preserve all existing data including category
           return { 
             ...product, 
-            [field]: value,
-            // Make sure categoryId and Category are preserved
-            categoryId: product.categoryId || product.Category?.id,
-            Category: product.Category || categories.find(c => c.id === product.categoryId)
+            [field]: value
+            // Don't touch categoryId and Category to prevent them from being reset
           };
         }
         return product;
@@ -211,11 +209,22 @@ const ProductManagement = () => {
       });
       
       // Update the local state with the updated product data from the server
-      setProducts(prev => prev.map(p => 
-        p.id === product.id 
-          ? { ...response.data, Category: categories.find(c => c.id === response.data.categoryId) }
-          : p
-      ));
+      setProducts(prev => prev.map(p => {
+        if (p.id === product.id) {
+          // Find the category object from the categories list
+          const category = categories.find(c => c.id === response.data.CategoryId || 
+            (response.data.Category && c.id === response.data.Category.id));
+          
+          // Return updated product with the category
+          return {
+            ...p, // Keep existing properties
+            ...response.data, // Update with server data
+            Category: category || p.Category, // Preserve category if not found
+            categoryId: response.data.CategoryId || (response.data.Category && response.data.Category.id) || p.categoryId
+          };
+        }
+        return p;
+      }));
       
       setError('');
     } catch (error) {
