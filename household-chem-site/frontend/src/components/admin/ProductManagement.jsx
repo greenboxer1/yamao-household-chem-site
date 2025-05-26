@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   MDBIcon, 
   MDBTable, 
@@ -70,6 +70,34 @@ const ProductManagement = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [imagePreview, setImagePreview] = useState('');
+  const [hoveredImage, setHoveredImage] = useState(null);
+  const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 });
+  const previewRef = useRef(null);
+  const hoverTimeout = useRef(null);
+
+  const handleMouseMove = useCallback((e) => {
+    if (hoveredImage) {
+      setPreviewPosition({
+        x: e.clientX + 20,
+        y: e.clientY + 20
+      });
+    }
+  }, [hoveredImage]);
+
+  useEffect(() => {
+    const moveHandler = (e) => handleMouseMove(e);
+    
+    if (hoveredImage) {
+      window.addEventListener('mousemove', moveHandler);
+    }
+    
+    return () => {
+      window.removeEventListener('mousemove', moveHandler);
+      if (hoverTimeout.current) {
+        clearTimeout(hoverTimeout.current);
+      }
+    };
+  }, [hoveredImage, handleMouseMove]);
   const [searchTerm, setSearchTerm] = useState('');
   const [newProduct, setNewProduct] = useState({
     name: '',
@@ -569,14 +597,29 @@ const ProductManagement = () => {
                     <td>{product.id}</td>
                     <td>
                       {product.image && (
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '100px',
-                          height: '100px',
-                          padding: '8px'
-                        }}>
+                        <div 
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100px',
+                            height: '100px',
+                            padding: '8px',
+                            position: 'relative',
+                            cursor: 'zoom-in'
+                          }}
+                          onMouseEnter={() => {
+                            hoverTimeout.current = setTimeout(() => {
+                              setHoveredImage(`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`);
+                            }, 200);
+                          }}
+                          onMouseLeave={() => {
+                            if (hoverTimeout.current) {
+                              clearTimeout(hoverTimeout.current);
+                            }
+                            setHoveredImage(null);
+                          }}
+                        >
                           <img 
                             src={`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`} 
                             alt={product.name}
@@ -584,7 +627,14 @@ const ProductManagement = () => {
                               maxWidth: '100%',
                               maxHeight: '100%',
                               objectFit: 'contain',
-                              display: 'block'
+                              display: 'block',
+                              transition: 'transform 0.2s',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.transform = 'scale(1.05)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.transform = 'scale(1)';
                             }}
                             onError={(e) => {
                               e.target.onerror = null;
@@ -662,6 +712,55 @@ const ProductManagement = () => {
               </MDBTableBody>
             </MDBTable>
           )}
+        </div>
+      )}
+      
+      {/* Image Preview Overlay */}
+      {hoveredImage && (
+        <div 
+          ref={previewRef}
+          style={{
+            position: 'fixed',
+            left: `${previewPosition.x}px`,
+            top: `${previewPosition.y}px`,
+            zIndex: 1050,
+            pointerEvents: 'none',
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            padding: '12px',
+            width: 'auto',
+            height: 'auto',
+            maxWidth: 'none',
+            overflow: 'visible',
+            transform: 'translate(0, -50%)',
+            transition: 'opacity 0.2s, transform 0.1s',
+            opacity: 1,
+            border: '1px solid #dee2e6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <img 
+            src={hoveredImage}
+            alt="Preview"
+            style={{
+              maxWidth: '400px',
+              maxHeight: '400px',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              borderRadius: '4px',
+              backgroundColor: 'white',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/placeholder.jpg';
+            }}
+          />
         </div>
       )}
     </div>
