@@ -353,58 +353,67 @@ const ProductManagement = () => {
       {/* Add New Product Form */}
       {isAdding && (
         <div className="card mb-4">
-          <div className="card-body">
+          <div className="card-body p-4">
             <h5 className="card-title mb-4">Добавить новый товар</h5>
-            <MDBRow>
-              <MDBCol md={3}>
+            <div className="d-flex flex-wrap align-items-end gap-3">
+              <div style={{ width: '280px' }}>
                 <MDBInput
                   label="Название"
                   value={newProduct.name}
                   onChange={(e) => handleNewProductChange('name', e.target.value)}
                   required
+                  className="mb-0"
+                  size="lg"
                 />
-              </MDBCol>
-              <MDBCol md={2}>
+              </div>
+              
+              <div style={{ width: '150px' }}>
                 <MDBInput
                   label="Вес"
                   value={newProduct.weight}
                   onChange={(e) => handleNewProductChange('weight', e.target.value)}
                   required
+                  className="mb-0"
+                  size="lg"
                 />
-              </MDBCol>
-              <MDBCol md={2}>
-                <label className="form-label">Цена</label>
-                <input
+              </div>
+              
+              <div style={{ width: '150px' }}>
+                <MDBInput
+                  label="Цена"
                   type="number"
-                  className="form-control mb-3"
                   value={newProduct.price}
                   onChange={(e) => handleNewProductChange('price', e.target.value)}
                   min="0"
                   step="0.01"
+                  className="mb-0"
+                  size="lg"
                 />
-              </MDBCol>
-              <MDBCol md={2}>
-                <label className="form-label">Цена со скидкой</label>
-                <input
+              </div>
+              
+              <div style={{ width: '180px' }}>
+                <MDBInput
+                  label="Цена со скидкой"
                   type="number"
-                  className="form-control mb-3"
-                  value={newProduct.discountPrice}
+                  value={newProduct.discountPrice || ''}
                   onChange={(e) => handleNewProductChange('discountPrice', e.target.value)}
                   min="0"
                   step="0.01"
+                  className="mb-0"
+                  size="lg"
                 />
-              </MDBCol>
-              <MDBCol md={2}>
-                <label className="form-label">Категория</label>
+              </div>
+              
+              <div style={{ width: '220px' }}>
                 <select
-                  className="form-select mb-3"
+                  className="form-select form-select-lg"
                   value={newProduct.categoryId || ''}
                   onChange={(e) => handleNewProductChange('categoryId', e.target.value)}
                   required
+                  style={{ height: '42px' }}
                 >
                   <option value="" disabled>Выберите категорию</option>
                   {categories.map(category => {
-                    // Skip the 'Все' category in the dropdown
                     if (category.id === 'all') return null;
                     return (
                       <option key={category.id} value={category.id}>
@@ -413,51 +422,67 @@ const ProductManagement = () => {
                     );
                   })}
                 </select>
-              </MDBCol>
-              <MDBCol md={2}>
-                <label className="form-label">Изображение</label>
+              </div>
+              
+              <div style={{ width: '240px' }}>
                 <input
                   type="file"
-                  className="form-control mb-3"
+                  className="form-control form-control-lg"
                   accept="image/*"
                   onChange={handleImageChange}
+                  style={{ height: '42px', padding: '0.5rem 1rem' }}
                 />
-              </MDBCol>
-              <MDBCol md={1} className="d-flex align-items-end">
+              </div>
+              
+              <div className="d-flex align-items-center" style={{ marginBottom: '2px' }}>
                 <MDBBtn 
                   color="success" 
+                  size="md"
                   onClick={handleAddProduct}
                   disabled={!isFormValid()}
                   title={!isFormValid() ? 'Заполните все обязательные поля' : ''}
+                  className="me-2"
+                  style={{ height: '42px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
                   <MDBIcon icon="check" />
                 </MDBBtn>
-                <MDBBtn color="light" className="ms-2" onClick={() => {
-                  setIsAdding(false);
-                  setImagePreview('');
-                  setNewProduct({
-                    name: '',
-                    price: '',
-                    discountPrice: '',
-                    weight: '',
-                    categoryId: '',
-                    image: null
-                  });
-                }}>
+                <MDBBtn 
+                  color="light" 
+                  size="md"
+                  onClick={() => {
+                    setIsAdding(false);
+                    setImagePreview('');
+                    setNewProduct({
+                      name: '',
+                      price: '',
+                      discountPrice: '',
+                      weight: '',
+                      categoryId: '',
+                      image: null
+                    });
+                  }}
+                  style={{ height: '42px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
                   <MDBIcon icon="times" />
                 </MDBBtn>
-              </MDBCol>
-            </MDBRow>
-            {imagePreview && (
-              <div className="mt-2">
-                <img 
-                  src={imagePreview} 
-                  alt="Preview" 
-                  style={{ maxWidth: '100px', maxHeight: '100px' }}
-                  className="img-thumbnail"
-                />
               </div>
-            )}
+              
+              {imagePreview && (
+                <div className="ms-2" style={{ width: '90px', height: '42px', overflow: 'hidden', borderRadius: '6px' }}>
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview" 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover',
+                      borderRadius: '6px'
+                    }}
+                    className="border"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
