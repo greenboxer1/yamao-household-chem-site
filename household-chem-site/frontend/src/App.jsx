@@ -5,6 +5,7 @@ import CategoryList from './components/CategoryList';
 import ProductGrid from './components/ProductGrid';
 import AdminRoutes from './routes/AdminRoutes';
 import MainLayout from './components/layout/MainLayout';
+import AboutPage from './pages/AboutPage';
 import { FilterProvider } from './context/FilterContext';
 import './App.css';
 
@@ -50,6 +51,16 @@ const App = () => {
           <Routes>
             {/* Admin Routes */}
             <Route path="/admin/*" element={<AdminRoutes />} />
+            
+            {/* About Page */}
+            <Route 
+              path="/about" 
+              element={
+                <MainApp>
+                  <AboutPage />
+                </MainApp>
+              } 
+            />
             
             {/* Main App Route */}
             <Route 
