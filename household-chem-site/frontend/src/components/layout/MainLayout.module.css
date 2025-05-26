@@ -78,19 +78,6 @@
   box-shadow: none;
 }
 
-/* Mobile Menu specific styles */
-.mobileMenu {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-color);
-}
-
-.mobileNavLink {
-  /* Uses MDB btn btn-outline-primary, can be customized further if needed */
-  text-align: left !important;
-  margin-bottom: var(--spacing-xs);
-}
-
 /* Header Contact Info Styles */
 /* .headerContacts { */
   /* Container for phone and telegram links - removed as it was empty */
@@ -138,4 +125,121 @@
 .footerLink:hover {
   text-decoration: underline !important;
   color: var(--primary-blue) !important;
+}
+
+/* Ensure MDBContainer in Navbar is fluid-like for full-width background on mobile collapse */
+.navbarContainerFluid {
+  width: 100%;
+  position: relative; /* Added for positioning context */
+}
+
+/* Desktop Navigation Styles */
+
+.navbarNavDesktop .navLink {
+  padding-top: 0.5rem;    /* Vertical padding for desktop links */
+  padding-bottom: 0.5rem;
+}
+
+.headerContactsDesktop .contactLink {
+  white-space: nowrap;
+}
+
+/* Mobile Navigation Styles */
+
+.mobileNavbarToggler {
+  border: none; /* Remove border from MDB default toggler if present */
+  padding: .25rem .5rem; /* Adjust padding */
+}
+
+.mobileNavbarToggler:focus {
+  box-shadow: none; /* Remove focus shadow */
+}
+
+/* Renamed from .mobileCollapse and simplified for direct div control */
+.mobileMenuWrapper {
+  display: none; /* Hidden by default */
+  width: 100%; 
+  background-color: #fff; 
+  border-top: 1px solid rgba(0,0,0,0.1); 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+  position: absolute; 
+  left: 0;
+  top: 100%; 
+  z-index: 1040; 
+}
+
+.mobileMenuWrapperOpen {
+  display: block !important; /* Force display when open */
+}
+
+.navbarNavMobile {
+  align-items: flex-start; /* Align items to the start */
+  padding-top: 0.5rem !important; /* Override MDB default if needed */
+  padding-bottom: 0.5rem !important;
+}
+
+.navLinkMobile {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 1.5rem; /* Generous padding for touch targets */
+  color: #343a40; /* Darker text for readability */
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 0; /* Full width feel */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navLinkMobile:hover {
+  background-color: #e9ecef; /* Light hover for touch feedback */
+  color: #0056b3; /* Darker blue on hover */
+}
+
+.navLinkActiveMobile,
+.navLinkActiveMobile:hover { /* Ensure active style overrides hover */
+  background-color: #007bff; /* Primary color */
+  color: white !important; /* Ensure text is readable */
+  font-weight: bold;
+}
+
+.navLinkMobile .MDBIcon {
+  width: 20px; /* Fixed width for icons to align text */
+  text-align: center;
+}
+
+.contactLinkMobile {
+  display: flex; /* Use flex for icon and text alignment */
+  align-items: center;
+  padding: 0.65rem 1.5rem;
+  color: #343a40;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.contactLinkMobile .MDBIcon {
+  width: 20px; /* Fixed width for icons */
+  text-align: center;
+}
+
+.contactLinkMobile:hover {
+  background-color: #e9ecef;
+  color: #0056b3;
+}
+
+.socialIconsMobileContainer {
+  border-top: 1px solid #e9ecef; /* Separator for social icons */
+}
+
+.socialIconMobile {
+  color: #343a40;
+  padding: 0.5rem; /* Add padding for easier touch */
+  transition: color 0.2s ease;
+}
+
+.socialIconMobile:hover {
+  color: #007bff;
+}
+
+/* Hide original mobile phone button if it's replaced by menu item */
+.phoneButtonContainerMobile {
+  display: none !important;
 }
