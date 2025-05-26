@@ -39,23 +39,22 @@ const Categories = () => {
     }
   };
 
-  const handleInputChange = (id, value) => {
-    setCategories(categories.map(cat => 
+  const handleInputChange = async (id, value) => {
+    const updatedCategories = categories.map(cat => 
       cat.id === id ? { ...cat, name: value } : cat
-    ));
-  };
-
-  const handleUpdateCategory = async (id) => {
-    const category = categories.find(cat => cat.id === id);
-    if (!category?.name?.trim()) return;
-
-    try {
-      await api.put(`/admin/categories/${id}`, { name: category.name });
-    } catch (err) {
-      console.error('Error updating category:', err);
-      alert(err.response?.data?.error || 'Не удалось обновить категорию');
-      // Revert on error
-      fetchCategories();
+    );
+    setCategories(updatedCategories);
+    
+    const category = updatedCategories.find(cat => cat.id === id);
+    if (category?.name?.trim()) {
+      try {
+        await api.put(`/admin/categories/${id}`, { name: category.name });
+      } catch (err) {
+        console.error('Error updating category:', err);
+        alert(err.response?.data?.error || 'Не удалось обновить категорию');
+        // Revert on error
+        fetchCategories();
+      }
     }
   };
 
@@ -137,20 +136,12 @@ const Categories = () => {
                         className="form-control form-control-sm"
                         value={category.name || ''}
                         onChange={(e) => handleInputChange(category.id, e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleUpdateCategory(category.id)}
+                        onBlur={() => handleInputChange(category.id, category.name)}
+                        onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
                       />
                     </td>
                     <td className="text-end">
                       <div className="btn-group btn-group-sm" role="group">
-                        <button 
-                          type="button"
-                          className="btn btn-success"
-                          onClick={() => handleUpdateCategory(category.id)}
-                          title="Сохранить"
-                          style={{ width: '32px' }}
-                        >
-                          <MDBIcon icon="check" />
-                        </button>
                         <button 
                           type="button"
                           className="btn btn-danger"

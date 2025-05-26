@@ -139,29 +139,65 @@ const ProductManagement = () => {
     }
   };
 
-  const handleInputChange = (id, field, value) => {
-    setProducts(prev => 
-      prev.map(product => {
-        if (product.id === id) {
-          // Special handling for category to update both categoryId and Category object
-          if (field === 'categoryId') {
-            const category = categories.find(c => c.id.toString() === value);
-            return { 
-              ...product, 
-              categoryId: value,
-              Category: category || product.Category // Preserve existing category if not found
-            };
-          }
-          // For other fields, preserve all existing data including category
+  const handleInputChange = async (id, field, value) => {
+    // First update the local state
+    const updatedProducts = products.map(product => {
+      if (product.id === id) {
+        // Special handling for category to update both categoryId and Category object
+        if (field === 'categoryId') {
+          const category = categories.find(c => c.id.toString() === value);
           return { 
             ...product, 
-            [field]: value
-            // Don't touch categoryId and Category to prevent them from being reset
+            categoryId: value,
+            Category: category || product.Category // Preserve existing category if not found
           };
         }
-        return product;
-      })
-    );
+        // For other fields, preserve all existing data including category
+        return { 
+          ...product, 
+          [field]: value
+          // Don't touch categoryId and Category to prevent them from being reset
+        };
+      }
+      return product;
+    });
+    
+    setProducts(updatedProducts);
+    
+    // Then save the changes to the server
+    const productToUpdate = updatedProducts.find(p => p.id === id);
+    if (productToUpdate) {
+      try {
+        const formData = new FormData();
+        formData.append('id', productToUpdate.id);
+        formData.append('name', productToUpdate.name);
+        formData.append('price', productToUpdate.price);
+        formData.append('weight', productToUpdate.weight || '');
+        formData.append('CategoryId', productToUpdate.categoryId || productToUpdate.CategoryId);
+        
+        if (productToUpdate.discountPrice) {
+          formData.append('discountPrice', productToUpdate.discountPrice);
+        }
+        
+        // Handle image only if it's a File object
+        if (productToUpdate.image && productToUpdate.image instanceof File) {
+          formData.append('image', productToUpdate.image);
+        } else if (productToUpdate.image && typeof productToUpdate.image === 'string') {
+          formData.append('image', productToUpdate.image);
+        }
+
+        await api.post('/admin/products', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+      } catch (error) {
+        console.error('Error updating product:', error);
+        setError('Ошибка при обновлении товара: ' + (error.response?.data?.error || error.message));
+        // Revert the changes on error
+        fetchProducts();
+      }
+    }
   };
 
   const handleNewProductChange = (field, value) => {
@@ -583,15 +619,6 @@ const ProductManagement = () => {
                     </td>
                     <td className="text-end">
                       <div className="btn-group btn-group-sm" role="group">
-                        <button 
-                          type="button"
-                          className="btn btn-success"
-                          onClick={() => handleSave(product)}
-                          title="Сохранить"
-                          style={{ width: '32px' }}
-                        >
-                          <MDBIcon icon="check" />
-                        </button>
                         <button 
                           type="button"
                           className="btn btn-danger"
