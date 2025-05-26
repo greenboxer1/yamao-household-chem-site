@@ -79,6 +79,16 @@ const ProductManagement = () => {
     categoryId: '',
     image: null
   });
+
+  // Check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      newProduct.name.trim() !== '' &&
+      newProduct.price !== '' &&
+      newProduct.weight.trim() !== '' &&
+      newProduct.categoryId !== ''
+    );
+  };
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
@@ -414,10 +424,26 @@ const ProductManagement = () => {
                 />
               </MDBCol>
               <MDBCol md={1} className="d-flex align-items-end">
-                <MDBBtn color="success" onClick={handleAddProduct}>
+                <MDBBtn 
+                  color="success" 
+                  onClick={handleAddProduct}
+                  disabled={!isFormValid()}
+                  title={!isFormValid() ? 'Заполните все обязательные поля' : ''}
+                >
                   <MDBIcon icon="check" />
                 </MDBBtn>
-                <MDBBtn color="light" className="ms-2" onClick={() => setIsAdding(false)}>
+                <MDBBtn color="light" className="ms-2" onClick={() => {
+                  setIsAdding(false);
+                  setImagePreview('');
+                  setNewProduct({
+                    name: '',
+                    price: '',
+                    discountPrice: '',
+                    weight: '',
+                    categoryId: '',
+                    image: null
+                  });
+                }}>
                   <MDBIcon icon="times" />
                 </MDBBtn>
               </MDBCol>
