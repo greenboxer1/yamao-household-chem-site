@@ -1,0 +1,69 @@
+.discounted-products-container {
+  position: relative;
+  padding: 0 40px; /* Space for arrows */
+}
+
+.horizontal-scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.products-list-horizontal {
+  display: flex;
+  overflow-x: auto; /* Hidden because we use buttons */
+  scroll-behavior: smooth;
+  padding-bottom: 15px; /* For scrollbar visibility if not hidden, or just spacing */
+  margin: 0 10px; /* Space between list and arrows */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.products-list-horizontal::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.product-card-wrapper {
+  flex: 0 0 auto; /* Prevent shrinking/growing */
+  width: 240px; /* Adjust as per your ProductCard's actual width */
+  min-width: 240px; /* Ensure it doesn't collapse */
+  margin-right: 15px;
+  box-sizing: border-box;
+}
+
+.product-card-wrapper:last-child {
+  margin-right: 0;
+}
+
+.scroll-arrow {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
+}
+
+.scroll-arrow:hover {
+  background-color: #f0f0f0;
+}
+
+.left-arrow {
+  left: -5px; /* Position outside the main container padding */
+}
+
+.right-arrow {
+  right: -5px; /* Position outside the main container padding */
+}
+
+/* Ensure ProductCard styles don't conflict or are well-contained */
+/* .product-card-wrapper .card {} */ /* Removed empty ruleset */
