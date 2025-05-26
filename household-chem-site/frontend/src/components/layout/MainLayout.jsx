@@ -55,15 +55,26 @@ const MainLayout = ({ children, contactInfo }) => {
         <MDBContainer className={`${styles.navbarContainerFluid} px-3 px-md-4 px-xxl-5`}>
           
           <div className={`${styles.desktopNavContainer} d-none d-lg-flex justify-content-between align-items-center w-100`}>
+            {/* This div groups logo, brand text, AND nav menu for unified alignment */}
             <div className="d-flex align-items-center"> 
-              <MDBNavbarBrand href="#" onClick={() => handleNavLinkClick('/')} className="d-flex align-items-center me-4">
-                <img src={logo} alt="Yamao Logo" className={styles.navbarBrandLogo} />
-                <span className={styles.navbarBrandText}>Yamao</span>
-              </MDBNavbarBrand>
+              <img 
+                src={logo} 
+                alt="Yamao Logo" 
+                className={`${styles.navbarBrandLogo} me-2`} 
+                onClick={() => handleNavLinkClick('/')} 
+                style={{cursor: 'pointer'}}
+              />
+              <span 
+                className={`${styles.navbarBrandText} me-4`} 
+                onClick={() => handleNavLinkClick('/')} 
+                style={{cursor: 'pointer'}}
+              >
+                Yamao
+              </span>
               
               <MDBNavbarNav className={`${styles.navbarNavDesktop} d-flex flex-row align-items-center`}>
                   {navItems.map((item) => (
-                      <MDBNavbarItem key={item.path} className="me-3">
+                      <MDBNavbarItem key={item.path} className="me-3"> 
                         <NavLink 
                           to={item.path} 
                           className={({ isActive }) => `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
