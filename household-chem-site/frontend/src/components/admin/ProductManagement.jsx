@@ -540,7 +540,17 @@ const ProductManagement = () => {
               {searchTerm ? 'Товары не найдены' : 'Нет доступных товаров'}
             </div>
           ) : (
-            <MDBTable hover responsive className="align-middle">
+            <MDBTable hover responsive className="align-middle" style={{ '--mdb-table-bg': 'transparent' }}>
+              <style>{
+                `
+                .table > :not(caption) > * > * {
+                  background-color: transparent;
+                }
+                .table > :not(:first-child) {
+                  border-top: none;
+                }
+                `
+              }</style>
               <MDBTableHead className="table-light">
                 <tr>
                   <th>ID</th>
@@ -559,15 +569,32 @@ const ProductManagement = () => {
                     <td>{product.id}</td>
                     <td>
                       {product.image && (
-                        <img 
-                          src={`/images/${product.image}`} 
-                          alt={product.name}
-                          style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                          className="img-thumbnail"
-                        />
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '100px',
+                          height: '100px',
+                          padding: '8px'
+                        }}>
+                          <img 
+                            src={`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`} 
+                            alt={product.name}
+                            style={{ 
+                              maxWidth: '100%',
+                              maxHeight: '100%',
+                              objectFit: 'contain',
+                              display: 'block'
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/placeholder.jpg';
+                            }}
+                          />
+                        </div>
                       )}
                     </td>
-                    <td>
+                    <td style={{ verticalAlign: 'middle' }}>
                       <EditableField
                         value={product.name}
                         onChange={(e) => handleInputChange(product.id, 'name', e.target.value)}
