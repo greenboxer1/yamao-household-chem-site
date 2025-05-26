@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { MDBContainer, MDBRow, MDBCol, MDBSpinner } from 'mdb-react-ui-kit';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import CategoryList from './components/CategoryList';
 import ProductGrid from './components/ProductGrid';
 import AdminRoutes from './routes/AdminRoutes';
@@ -28,6 +28,9 @@ const App = () => {
       </MDBSpinner>
     </div>
   );
+
+  // Lazy load pages
+  const PromotionsPage = lazy(() => import('./pages/PromotionsPage'));
 
   // Wrapper component to apply MainLayout to all non-admin routes
   const MainApp = ({ children }) => {
@@ -63,6 +66,16 @@ const App = () => {
               } 
             />
             
+            {/* Promotions Page */}
+            <Route 
+              path="/promotions" 
+              element={
+                <MainApp>
+                  <PromotionsPage />
+                </MainApp>
+              }
+            />
+
             {/* Stores Page */}
             <Route 
               path="/stores" 

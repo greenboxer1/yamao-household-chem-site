@@ -4,6 +4,7 @@ import LoginForm from '../components/admin/LoginForm';
 import AdminLayout from '../components/admin/AdminLayout';
 import ProductManagement from '../components/admin/ProductManagement';
 import Categories from '../components/admin/Categories';
+import BannerManagement from '../components/admin/BannerManagement';
 
 const AdminRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const AdminRoutes = () => {
         <Route index element={<Navigate to="products" replace />} />
         <Route path="products" element={<ProductManagement />} />
         <Route path="categories" element={<Categories />} />
+        <Route path="banners" element={<BannerManagement />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

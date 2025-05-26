@@ -23,6 +23,47 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Data directory and file for promotional banners
+const dataDir = path.join(__dirname, 'data');
+const bannersFilePath = path.join(dataDir, 'promotional_banners.json');
+
+// Ensure data directory exists
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Helper function to read banners data
+const readBannersData = () => {
+  if (!fs.existsSync(bannersFilePath)) {
+    // Create default banners file if it doesn't exist
+    const defaultBanners = { banner1Url: null, banner2Url: null };
+    fs.writeFileSync(bannersFilePath, JSON.stringify(defaultBanners, null, 2));
+    return defaultBanners;
+  }
+  try {
+    const data = fs.readFileSync(bannersFilePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading banners file:', error);
+    return { banner1Url: null, banner2Url: null }; // Fallback
+  }
+};
+
+// Helper function to write banners data
+const writeBannersData = (data) => {
+  try {
+    fs.writeFileSync(bannersFilePath, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('Error writing banners file:', error);
+  }
+};
+
+// --- Public Route for Promotional Banners ---
+router.get('/promotional-banners', (req, res) => {
+  const banners = readBannersData();
+  res.json(banners);
+});
+
 // Admin login
 router.post('/admin/login', async (req, res) => {
   try {
@@ -280,6 +321,77 @@ router.delete('/admin/categories/:id', auth, async (req, res) => {
       error: 'Failed to delete category',
       details: error.message 
     });
+  }
+});
+
+// --- Admin Routes for Promotional Banners ---
+
+// Upload/Update Banner for Slot 1
+router.post('/admin/promotional-banners/upload/slot1', auth, upload.single('bannerImage'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No image file uploaded for Banner 1.' });
+  }
+
+  try {
+    const bannersData = readBannersData();
+    const oldImageUrl = bannersData.banner1Url;
+
+    // Delete old image if it exists
+    if (oldImageUrl) {
+      const oldImagePath = path.join(__dirname, 'public', oldImageUrl);
+      if (fs.existsSync(oldImagePath)) {
+        try {
+          fs.unlinkSync(oldImagePath);
+          console.log(`Deleted old banner 1 image: ${oldImagePath}`);
+        } catch (unlinkError) {
+          console.error(`Error deleting old banner 1 image ${oldImagePath}:`, unlinkError);
+          // Continue even if deletion fails, to not block new image upload
+        }
+      }
+    }
+
+    const newImageUrl = `/images/${req.file.filename}`;
+    bannersData.banner1Url = newImageUrl;
+    writeBannersData(bannersData);
+
+    res.json({ message: 'Banner 1 uploaded successfully.', imageUrl: newImageUrl });
+  } catch (error) {
+    console.error('Error uploading Banner 1:', error);
+    res.status(500).json({ error: 'Failed to upload Banner 1.' });
+  }
+});
+
+// Upload/Update Banner for Slot 2
+router.post('/admin/promotional-banners/upload/slot2', auth, upload.single('bannerImage'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No image file uploaded for Banner 2.' });
+  }
+
+  try {
+    const bannersData = readBannersData();
+    const oldImageUrl = bannersData.banner2Url;
+
+    // Delete old image if it exists
+    if (oldImageUrl) {
+      const oldImagePath = path.join(__dirname, 'public', oldImageUrl);
+      if (fs.existsSync(oldImagePath)) {
+        try {
+          fs.unlinkSync(oldImagePath);
+          console.log(`Deleted old banner 2 image: ${oldImagePath}`);
+        } catch (unlinkError) {
+          console.error(`Error deleting old banner 2 image ${oldImagePath}:`, unlinkError);
+        }
+      }
+    }
+
+    const newImageUrl = `/images/${req.file.filename}`;
+    bannersData.banner2Url = newImageUrl;
+    writeBannersData(bannersData);
+
+    res.json({ message: 'Banner 2 uploaded successfully.', imageUrl: newImageUrl });
+  } catch (error) {
+    console.error('Error uploading Banner 2:', error);
+    res.status(500).json({ error: 'Failed to upload Banner 2.' });
   }
 });
 

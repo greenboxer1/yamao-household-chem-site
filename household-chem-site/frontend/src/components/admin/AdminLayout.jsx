@@ -119,6 +119,12 @@ const AdminLayout = () => {
                   Категории
                 </MDBNavbarLink>
               </MDBNavbarItem>
+              <MDBNavbarItem>
+                <MDBNavbarLink active={currentPath === '/admin/banners'} tag={Link} to="/admin/banners">
+                  <MDBIcon icon="images" className="me-1" /> 
+                  Баннеры
+                </MDBNavbarLink>
+              </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>
         </MDBContainer>

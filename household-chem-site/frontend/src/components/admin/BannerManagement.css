@@ -1,0 +1,81 @@
+.banner-management-container {
+  background-color: #f8f9fa;
+}
+
+.img-preview { /* This class is now used for the main banner display in each slot */
+  max-height: 200px; /* Adjusted max-height for main display */
+  width: 100%; 
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  object-fit: cover; 
+  aspect-ratio: 16/9; 
+  display: block; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.banner-slot-manager {
+  background-color: #fff;
+  min-height: 350px; /* Adjusted min-height slightly */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure button is at bottom */
+}
+
+.banner-slot-col {
+  margin-bottom: 15px; 
+}
+
+.alert {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.form-label {
+    margin-bottom: 0.5rem;
+}
+
+.image-and-chooser-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  flex-grow: 1; /* Allow this container to grow and push upload button down */
+  justify-content: center; /* Center content if not much space is taken by image */
+}
+
+.image-and-chooser-container .btn-primary {
+    margin-top: auto; /* Push button to bottom of this flex container */
+}
+
+.image-display-area {
+  width: 100%;
+  min-height: 220px; /* Adjusted for main display */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #ddd; 
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f8f9fa; 
+  margin-bottom: 10px; /* Space before the 'Choose file' button */
+}
+
+.placeholder-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%; 
+  color: #6c757d; 
+}
+
+.placeholder-preview .mdb-icon {
+  font-size: 3rem; /* Slightly larger icon for placeholder */
+}
+
+.banner-slot-manager .btn-primary {
+  /* This class is now for the single action button */
+  /* margin-top: auto; /* This should push it to the bottom of banner-slot-manager */
+  /* If inside image-and-chooser-container and that container has flex-grow, then it might not need margin-top:auto here */
+}
