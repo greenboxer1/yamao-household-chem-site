@@ -117,7 +117,7 @@ const ProductManagement = () => {
       newProduct.categoryId !== ''
     );
   };
-  const [isAdding, setIsAdding] = useState(false);
+  // Form is always visible
 
   useEffect(() => {
     fetchProducts();
@@ -353,7 +353,6 @@ const ProductManagement = () => {
         image: null
       });
       setImagePreview('');
-      setIsAdding(false);
       setError('');
     } catch (error) {
       console.error('Error adding product:', error);
@@ -376,183 +375,170 @@ const ProductManagement = () => {
   return (
     <div className="container-fluid p-0" style={{ '--bs-gutter-x': '0.5rem' }}>
       <style>{styles}</style>
-      {/* Search Bar with Add Button */}
+      <h4 className="mb-4">Управление товарами</h4>
+      
+      {/* Add New Product Form */}
       <div className="card mb-4">
-        <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-          <h5 className="mb-3 mb-md-0">Управление товарами</h5>
-          <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
-            <div className="input-group" style={{ minWidth: '250px' }}>
-              <span className="input-group-text">
-                <MDBIcon icon="search" />
-              </span>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Поиск по названию или категории..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+        <div className="card-header">
+          <h5 className="mb-0">Добавить новый товар</h5>
+        </div>
+        <div className="card-body p-4">
+          <div className="d-flex flex-wrap align-items-end gap-3">
+            <div style={{ width: '280px' }}>
+              <MDBInput
+                label="Название"
+                value={newProduct.name}
+                onChange={(e) => handleNewProductChange('name', e.target.value)}
+                required
+                className="mb-0"
+                size="lg"
               />
-              {searchTerm && (
-                <button 
-                  className="btn btn-outline-secondary" 
-                  type="button"
-                  onClick={() => setSearchTerm('')}
-                >
-                  <MDBIcon icon="times" />
-                </button>
-              )}
             </div>
-            <button 
-              className="btn btn-primary ms-md-2"
-              onClick={() => setIsAdding(true)}
-              disabled={isAdding}
-            >
-              <MDBIcon icon="plus" className="me-1" />
-              Добавить товар
-            </button>
+            
+            <div style={{ width: '150px' }}>
+              <MDBInput
+                label="Вес"
+                value={newProduct.weight}
+                onChange={(e) => handleNewProductChange('weight', e.target.value)}
+                required
+                className="mb-0"
+                size="lg"
+              />
+            </div>
+            
+            <div style={{ width: '150px' }}>
+              <MDBInput
+                label="Цена"
+                type="number"
+                value={newProduct.price}
+                onChange={(e) => handleNewProductChange('price', e.target.value)}
+                min="0"
+                step="0.01"
+                className="mb-0"
+                size="lg"
+              />
+            </div>
+            
+            <div style={{ width: '180px' }}>
+              <MDBInput
+                label="Цена со скидкой"
+                type="number"
+                value={newProduct.discountPrice || ''}
+                onChange={(e) => handleNewProductChange('discountPrice', e.target.value)}
+                min="0"
+                step="0.01"
+                className="mb-0"
+                size="lg"
+              />
+            </div>
+            
+            <div style={{ width: '220px' }}>
+              <select
+                className="form-select form-select-lg"
+                value={newProduct.categoryId || ''}
+                onChange={(e) => handleNewProductChange('categoryId', e.target.value)}
+                required
+                style={{ height: '42px' }}
+              >
+                <option value="" disabled>Выберите категорию</option>
+                {categories.map(category => {
+                  if (category.id === 'all') return null;
+                  return (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            
+            <div style={{ width: '240px' }}>
+              <input
+                type="file"
+                className="form-control form-control-lg"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ height: '42px', padding: '0.5rem 1rem' }}
+              />
+            </div>
+            
+            <div className="d-flex align-items-center" style={{ marginBottom: '2px' }}>
+              <MDBBtn 
+                color="success" 
+                size="md"
+                onClick={handleAddProduct}
+                disabled={!isFormValid()}
+                title={!isFormValid() ? 'Заполните все обязательные поля' : ''}
+                className="me-2"
+                style={{ height: '42px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <MDBIcon icon="check" />
+              </MDBBtn>
+              <MDBBtn 
+                color="light" 
+                size="md"
+                onClick={() => {
+                  setImagePreview('');
+                  setNewProduct({
+                    name: '',
+                    price: '',
+                    discountPrice: '',
+                    weight: '',
+                    categoryId: '',
+                    image: null
+                  });
+                }}
+                style={{ height: '42px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <MDBIcon icon="times" />
+              </MDBBtn>
+            </div>
+            
+            {imagePreview && (
+              <div className="ms-2" style={{ width: '90px', height: '42px', overflow: 'hidden', borderRadius: '6px' }}>
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    borderRadius: '6px'
+                  }}
+                  className="border"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Add New Product Form */}
-      {isAdding && (
-        <div className="card mb-4">
-          <div className="card-body p-4">
-            <h5 className="card-title mb-4">Добавить новый товар</h5>
-            <div className="d-flex flex-wrap align-items-end gap-3">
-              <div style={{ width: '280px' }}>
-                <MDBInput
-                  label="Название"
-                  value={newProduct.name}
-                  onChange={(e) => handleNewProductChange('name', e.target.value)}
-                  required
-                  className="mb-0"
-                  size="lg"
-                />
-              </div>
-              
-              <div style={{ width: '150px' }}>
-                <MDBInput
-                  label="Вес"
-                  value={newProduct.weight}
-                  onChange={(e) => handleNewProductChange('weight', e.target.value)}
-                  required
-                  className="mb-0"
-                  size="lg"
-                />
-              </div>
-              
-              <div style={{ width: '150px' }}>
-                <MDBInput
-                  label="Цена"
-                  type="number"
-                  value={newProduct.price}
-                  onChange={(e) => handleNewProductChange('price', e.target.value)}
-                  min="0"
-                  step="0.01"
-                  className="mb-0"
-                  size="lg"
-                />
-              </div>
-              
-              <div style={{ width: '180px' }}>
-                <MDBInput
-                  label="Цена со скидкой"
-                  type="number"
-                  value={newProduct.discountPrice || ''}
-                  onChange={(e) => handleNewProductChange('discountPrice', e.target.value)}
-                  min="0"
-                  step="0.01"
-                  className="mb-0"
-                  size="lg"
-                />
-              </div>
-              
-              <div style={{ width: '220px' }}>
-                <select
-                  className="form-select form-select-lg"
-                  value={newProduct.categoryId || ''}
-                  onChange={(e) => handleNewProductChange('categoryId', e.target.value)}
-                  required
-                  style={{ height: '42px' }}
-                >
-                  <option value="" disabled>Выберите категорию</option>
-                  {categories.map(category => {
-                    if (category.id === 'all') return null;
-                    return (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              
-              <div style={{ width: '240px' }}>
-                <input
-                  type="file"
-                  className="form-control form-control-lg"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ height: '42px', padding: '0.5rem 1rem' }}
-                />
-              </div>
-              
-              <div className="d-flex align-items-center" style={{ marginBottom: '2px' }}>
-                <MDBBtn 
-                  color="success" 
-                  size="md"
-                  onClick={handleAddProduct}
-                  disabled={!isFormValid()}
-                  title={!isFormValid() ? 'Заполните все обязательные поля' : ''}
-                  className="me-2"
-                  style={{ height: '42px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <MDBIcon icon="check" />
-                </MDBBtn>
-                <MDBBtn 
-                  color="light" 
-                  size="md"
-                  onClick={() => {
-                    setIsAdding(false);
-                    setImagePreview('');
-                    setNewProduct({
-                      name: '',
-                      price: '',
-                      discountPrice: '',
-                      weight: '',
-                      categoryId: '',
-                      image: null
-                    });
-                  }}
-                  style={{ height: '42px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <MDBIcon icon="times" />
-                </MDBBtn>
-              </div>
-              
-              {imagePreview && (
-                <div className="ms-2" style={{ width: '90px', height: '42px', overflow: 'hidden', borderRadius: '6px' }}>
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'cover',
-                      borderRadius: '6px'
-                    }}
-                    className="border"
-                  />
-                </div>
-              )}
-            </div>
+      {/* Search Bar */}
+      <div className="card mb-4">
+        <div className="card-body p-3">
+          <div className="input-group" style={{ maxWidth: '500px' }}>
+            <span className="input-group-text">
+              <MDBIcon icon="search" />
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Поиск по названию или категории..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button 
+                className="btn btn-outline-secondary" 
+                type="button"
+                onClick={() => setSearchTerm('')}
+              >
+                <MDBIcon icon="times" />
+              </button>
+            )}
           </div>
         </div>
-      )}
-
-
-
+      </div>
       {/* Products Table */}
       {loading ? (
         <div className="text-center my-5">
@@ -569,16 +555,6 @@ const ProductManagement = () => {
             </div>
           ) : (
             <MDBTable hover responsive className="align-middle" style={{ '--mdb-table-bg': 'transparent' }}>
-              <style>{
-                `
-                .table > :not(caption) > * > * {
-                  background-color: transparent;
-                }
-                .table > :not(:first-child) {
-                  border-top: none;
-                }
-                `
-              }</style>
               <MDBTableHead className="table-light">
                 <tr>
                   <th>ID</th>
@@ -623,18 +599,12 @@ const ProductManagement = () => {
                           <img 
                             src={`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`} 
                             alt={product.name}
-                            style={{ 
-                              maxWidth: '100%',
-                              maxHeight: '100%',
+                            style={{
+                              width: '100%',
+                              height: '100%',
                               objectFit: 'contain',
-                              display: 'block',
-                              transition: 'transform 0.2s',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.transform = 'scale(1.05)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.transform = 'scale(1)';
+                              borderRadius: '4px',
+                              border: '1px solid #dee2e6'
                             }}
                             onError={(e) => {
                               e.target.onerror = null;
@@ -644,10 +614,11 @@ const ProductManagement = () => {
                         </div>
                       )}
                     </td>
-                    <td style={{ verticalAlign: 'middle' }}>
+                    <td>
                       <EditableField
                         value={product.name}
                         onChange={(e) => handleInputChange(product.id, 'name', e.target.value)}
+                        onBlur={() => handleSave(product)}
                       />
                     </td>
                     <td>
@@ -655,36 +626,36 @@ const ProductManagement = () => {
                         type="number"
                         value={product.price}
                         onChange={(e) => handleInputChange(product.id, 'price', e.target.value)}
-                        className="text-end"
+                        onBlur={() => handleSave(product)}
                       />
                     </td>
                     <td>
                       <EditableField
                         type="number"
                         value={product.discountPrice || ''}
-                        onChange={(e) => handleInputChange(product.id, 'discountPrice', e.target.value || null)}
-                        className="text-end"
-                        placeholder="Нет скидки"
+                        onChange={(e) => handleInputChange(product.id, 'discountPrice', e.target.value)}
+                        onBlur={() => handleSave(product)}
                       />
                     </td>
                     <td>
                       <EditableField
                         value={product.weight || ''}
                         onChange={(e) => handleInputChange(product.id, 'weight', e.target.value)}
-                        required
+                        onBlur={() => handleSave(product)}
                       />
                     </td>
                     <td>
                       <select
-                        className="form-select"
-                        value={product.Category?.id || product.categoryId || ''}
-                        onChange={(e) => handleInputChange(product.id, 'categoryId', e.target.value)}
-                        required
-                        style={{ minWidth: '150px' }}
+                        className="form-select form-select-sm"
+                        value={product.categoryId || (product.Category ? product.Category.id : '')}
+                        onChange={(e) => {
+                          handleInputChange(product.id, 'categoryId', e.target.value);
+                          handleSave({ ...product, categoryId: e.target.value });
+                        }}
+                        style={{ minWidth: '120px' }}
                       >
-                        <option value="" disabled>Выберите категорию</option>
+                        <option value="">Выберите категорию</option>
                         {categories.map(category => {
-                          // Skip the 'Все' category in the dropdown
                           if (category.id === 'all') return null;
                           return (
                             <option key={category.id} value={category.id}>
@@ -695,16 +666,16 @@ const ProductManagement = () => {
                       </select>
                     </td>
                     <td className="text-end">
-                      <div className="btn-group btn-group-sm" role="group">
-                        <button 
-                          type="button"
-                          className="btn btn-danger"
+                      <div className="d-flex justify-content-end gap-2">
+                        <MDBBtn
+                          color="danger"
+                          size="sm"
+                          floating
                           onClick={() => handleDelete(product.id)}
-                          title="Удалить"
-                          style={{ width: '32px' }}
+                          className="ms-2"
                         >
-                          <MDBIcon icon="trash" />
-                        </button>
+                          <MDBIcon icon="trash" size="sm" />
+                        </MDBBtn>
                       </div>
                     </td>
                   </tr>
@@ -717,25 +688,17 @@ const ProductManagement = () => {
       
       {/* Image Preview Overlay */}
       {hoveredImage && (
-        <div 
+        <div
           ref={previewRef}
           style={{
             position: 'fixed',
             left: `${previewPosition.x}px`,
             top: `${previewPosition.y}px`,
-            zIndex: 1050,
-            pointerEvents: 'none',
+            zIndex: 9999,
             backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-            padding: '12px',
-            width: 'auto',
-            height: 'auto',
-            maxWidth: 'none',
-            overflow: 'visible',
-            transform: 'translate(0, -50%)',
-            transition: 'opacity 0.2s, transform 0.1s',
-            opacity: 1,
+            padding: '8px',
+            borderRadius: '4px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             border: '1px solid #dee2e6',
             display: 'flex',
             alignItems: 'center',
