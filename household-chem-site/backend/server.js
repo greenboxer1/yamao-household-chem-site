@@ -93,7 +93,7 @@ sequelize.sync().then(async () => {
       username: 'admin',
       password: 'admin123' // In production, use a more secure password
     });
-    console.log('Default admin user created. Username: admin, Password: admin123');
+    console.log('Default admin user created. Username: admin, Password: admin');
   }
 });
 
