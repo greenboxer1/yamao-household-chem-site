@@ -121,10 +121,9 @@ const StoresPage = () => {
                   height="600px"
                   modules={['control.ZoomControl', 'control.TypeSelector']}
                   onLoad={(ymaps) => {
-                    // Disable default balloon on map load
-                    if (ymaps && mapRef.current) {
-                      mapRef.current.behaviors.disable('scrollZoom');
-                    }
+                    // Ensure ymaps and mapRef.current are available
+                    // The 'scrollZoom' behavior is enabled by default if included in mapState.behaviors
+                    // No need to explicitly disable or enable it here if mapState is set correctly.
                   }}
                 >
                   {stores.map((store) => (

@@ -7,6 +7,7 @@ import AdminRoutes from './routes/AdminRoutes';
 import MainLayout from './components/layout/MainLayout';
 import AboutPage from './pages/AboutPage';
 import StoresPage from './pages/StoresPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { FilterProvider } from './context/FilterContext';
 import './App.css';
 
@@ -37,12 +38,23 @@ const App = () => {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/admin');
     
+    // Define contact information (can be fetched or configured elsewhere later)
+    const contactInfo = {
+      phone: '+7 (999) 123-45-67',
+      email: 'info@yamao.example.com',
+      socialMedia: {
+        vk: '#!',
+        telegram: 'https://t.me/your_yamao_channel',
+        whatsapp: '#!'
+      }
+    };
+
     if (isAdminRoute) {
       return children;
     }
     
     return (
-      <MainLayout>
+      <MainLayout contactInfo={contactInfo}> 
         {children}
       </MainLayout>
     );
@@ -66,9 +78,9 @@ const App = () => {
               } 
             />
             
-            {/* Promotions Page */}
+            {/* Promotions Page - Now the default route */}
             <Route 
-              path="/promotions" 
+              path="/" 
               element={
                 <MainApp>
                   <PromotionsPage />
@@ -86,16 +98,16 @@ const App = () => {
               } 
             />
             
-            {/* Main App Route */}
+            {/* Main Catalog Route - Moved to /catalog */}
             <Route 
-              path="/*" 
+              path="/catalog" 
               element={
                 <MainApp>
                   <div className="main-app">
                     <div className="container-fluid py-3 px-4 px-xxl-5">
                       <div className="row gx-4 gx-xxl-5">
                         <div className="col-12 col-md-5 col-lg-4 col-xl-4">
-                          <div className="sticky-top" style={{ top: '1rem' }}>
+                          <div className="sticky-top" style={{ top: '120px', zIndex: 1000 }}>
                             <CategoryList categories={categories} />
                           </div>
                         </div>
@@ -107,6 +119,16 @@ const App = () => {
                   </div>
                 </MainApp>
               } 
+            />
+
+            {/* Catch-all route for 404 Not Found - must be last */}
+            <Route 
+              path="*" 
+              element={ (
+                <MainApp>
+                  <NotFoundPage />
+                </MainApp>
+              ) }
             />
           </Routes>
         </FilterProvider>

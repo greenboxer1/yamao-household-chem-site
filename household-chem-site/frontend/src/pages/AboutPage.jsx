@@ -74,8 +74,11 @@ const AboutPage = () => {
           <MDBRow className="g-4">
             <MDBCol md="4" className="text-center">
               <div className="p-4 bg-light rounded-4 h-100">
-                <div className="bg-primary bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
-                  <MDBIcon icon="award" size="2x" className="text-primary" />
+                <div 
+                  className="bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                  style={{ width: '4rem', height: '4rem' }}
+                >
+                  <MDBIcon icon="award" size="2x" className="text-white" />
                 </div>
                 <h4>Качество</h4>
                 <p>Только оригинальная продукция от ведущих производителей бытовой химии</p>
@@ -83,8 +86,11 @@ const AboutPage = () => {
             </MDBCol>
             <MDBCol md="4" className="text-center">
               <div className="p-4 bg-light rounded-4 h-100">
-                <div className="bg-primary bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
-                  <MDBIcon icon="tags" size="2x" className="text-primary" />
+                <div 
+                  className="bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                  style={{ width: '4rem', height: '4rem' }}
+                >
+                  <MDBIcon icon="tags" size="2x" className="text-white" />
                 </div>
                 <h4>Доступные цены</h4>
                 <p>Гибкая ценовая политика и регулярные акции для наших покупателей</p>
@@ -92,8 +98,11 @@ const AboutPage = () => {
             </MDBCol>
             <MDBCol md="4" className="text-center">
               <div className="p-4 bg-light rounded-4 h-100">
-                <div className="bg-primary bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
-                  <MDBIcon icon="store" size="2x" className="text-primary" />
+                <div 
+                  className="bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                  style={{ width: '4rem', height: '4rem' }}
+                >
+                  <MDBIcon icon="store" size="2x" className="text-white" />
                 </div>
                 <h4>Удобное расположение</h4>
                 <p>Наши магазины расположены в удобных районах города с парковками</p>

@@ -1,0 +1,141 @@
+/* MainLayout.module.css */
+
+.navbar {
+  background-color: var(--background-body);
+  transition: box-shadow var(--transition-base);
+  padding-top: 0.25rem; /* Reduced from var(--spacing-sm) */
+  padding-bottom: 0.25rem; /* Reduced from var(--spacing-sm) */
+}
+
+.navbarScrolled {
+  box-shadow: var(--box-shadow-sm);
+}
+
+.navbarBrandLogo {
+  height: 40px;
+  margin-right: var(--spacing-sm); /* Keep margin-right to space it from the text */
+}
+
+.navbarBrandText {
+  font-weight: 700; /* bold */
+  font-size: 1.5rem; /* fs-5 equivalent or slightly larger */
+  color: var(--text-dark);
+  line-height: 1; /* Adjust for vertical alignment if needed */
+  /* margin-left: var(--spacing-xs); */ /* Optional: if margin-right on logo isn't enough */
+}
+
+.navLink {
+  color: var(--text-dark);
+  padding: var(--spacing-sm) var(--spacing-md);
+  transition: color var(--transition-base);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.navLink:hover,
+.navLink:focus {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
+
+.navLinkActive {
+  color: var(--primary-blue);
+  font-weight: 500;
+}
+
+.navLinkActive .navIcon {
+  color: var(--primary-blue);
+}
+
+.navIcon {
+  margin-right: var(--spacing-sm);
+  color: var(--secondary-gray);
+}
+
+.navLink:hover .navIcon,
+.navLink:focus .navIcon {
+  color: var(--primary-blue);
+}
+
+.phoneButton {
+  /* Uses MDB btn-outline-primary, which should pick up our --primary-blue */
+  /* Add specific overrides if needed */
+  white-space: nowrap;
+}
+
+.phoneButtonMobile {
+  padding: 0.375rem 0.75rem; /* Adjust padding as needed for a smaller button */
+  font-size: 0.875rem; /* Smaller font size if needed */
+}
+
+.navbarToggler {
+  border: none;
+  color: var(--text-dark);
+}
+
+.navbarToggler:focus {
+  box-shadow: none;
+}
+
+/* Mobile Menu specific styles */
+.mobileMenu {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.mobileNavLink {
+  /* Uses MDB btn btn-outline-primary, can be customized further if needed */
+  text-align: left !important;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Header Contact Info Styles */
+/* .headerContacts { */
+  /* Container for phone and telegram links - removed as it was empty */
+/* } */
+
+.contactLink {
+  color: var(--text-dark);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm); /* Minimal padding */
+  border-radius: var(--border-radius-base);
+  transition: color var(--transition-base), background-color var(--transition-base);
+}
+
+.contactLink:hover,
+.contactLink:focus {
+  color: var(--primary-blue);
+  background-color: var(--background-light-gray); /* Subtle hover effect */
+  text-decoration: none;
+}
+
+.phoneLink span {
+  /* Styles for the phone number text if needed, e.g., font-weight */
+  font-weight: 500;
+}
+
+.telegramLink .fab.fa-telegram-plane {
+  /* Specific styles for the Telegram icon if needed, e.g., size or color */
+  color: var(--text-dark); /* Default color, matches .contactLink */
+}
+
+.telegramLink:hover .fab.fa-telegram-plane,
+.telegramLink:focus .fab.fa-telegram-plane {
+  color: var(--primary-blue); /* Color change on hover/focus */
+}
+
+/* Footer Styles */
+.footer {
+  background-color: var(--background-light-gray);
+  position: relative; /* Ensure z-index is effective */
+  z-index: 100; /* Adjust as needed, should be lower than modals/popups but higher than page content */
+}
+
+.footerLink:hover {
+  text-decoration: underline !important;
+  color: var(--primary-blue) !important;
+}

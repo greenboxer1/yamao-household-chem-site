@@ -19,10 +19,14 @@
 
 .store-item {
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, border-left-color 0.2s ease-in-out, color 0.2s ease-in-out;
   border-left: 3px solid transparent;
-  border-radius: 0 !important;
+  border-top: 1px solid transparent;
+  border-right: none;
   border-bottom: 1px solid #dee2e6 !important;
+  border-radius: 0 !important;
+  box-sizing: border-box;
+  outline: none !important;
 }
 
 .store-item:last-child {
@@ -31,12 +35,16 @@
 
 .store-item:hover {
   background-color: #f8f9fa;
-  border-left: 3px solid #0d6efd;
+  border-left-color: #0d6efd;
+  border-top-color: transparent !important;
+  outline: none !important;
 }
 
 .store-item.active {
   background-color: #f0f7ff;
-  border-left: 3px solid #0d6efd;
+  border-left-color: #0d6efd;
+  border-top-color: transparent !important;
+  outline: none !important;
 }
 
 .store-item h5 {

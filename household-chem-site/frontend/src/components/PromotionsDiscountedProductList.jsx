@@ -14,6 +14,12 @@ const PromotionsDiscountedProductList = () => {
   const [canActuallyScrollLeft, setCanActuallyScrollLeft] = useState(false);
   const [canActuallyScrollRight, setCanActuallyScrollRight] = useState(false);
 
+  // State for drag scrolling
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftStart, setScrollLeftStart] = useState(0);
+  const DRAG_SPEED_MULTIPLIER = 1.5; // Adjust for desired drag speed
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -97,6 +103,42 @@ const PromotionsDiscountedProductList = () => {
   }, [loading, updateScrollability]); 
 
 
+  // Mouse event handlers for drag scrolling
+  const handleMouseDown = (e) => {
+    if (!listRef.current) return;
+    // Prevent drag on scrollbar itself or on interactive elements like buttons within cards if any
+    if (e.target.closest('button, a')) return;
+    // Check if the click is on the scrollbar itself for horizontal scroll
+    const isScrollbarClick = e.clientX >= listRef.current.clientWidth + listRef.current.offsetLeft - 17; // 17px is a common scrollbar width
+    if (isScrollbarClick && e.offsetY >= listRef.current.clientHeight - 17) return;
+
+
+    setIsDragging(true);
+    setStartX(e.pageX - listRef.current.offsetLeft);
+    setScrollLeftStart(listRef.current.scrollLeft);
+    listRef.current.classList.add('dragging-scroll');
+    // Prevent text selection while dragging
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (listRef.current) {
+      listRef.current.classList.remove('dragging-scroll');
+    }
+    document.body.style.userSelect = '';
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !listRef.current) return;
+    e.preventDefault(); // Prevent default drag behavior (e.g., image dragging)
+    const x = e.pageX - listRef.current.offsetLeft;
+    const walk = (x - startX) * DRAG_SPEED_MULTIPLIER;
+    listRef.current.scrollLeft = scrollLeftStart - walk;
+    updateScrollability(); // Update arrows based on new scroll position
+  };
+
   const scrollList = (direction) => {
     if (listRef.current) {
       const scrollAmount = listRef.current.clientWidth * 0.9;
@@ -133,7 +175,14 @@ const PromotionsDiscountedProductList = () => {
             <MDBIcon fas icon="chevron-left" />
           </button>
         )}
-        <div className="products-list-horizontal" ref={listRef}>
+        <div 
+          className="products-list-horizontal"
+          ref={listRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeaveOrUp}
+          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+        >
           {products.map((product) => (
             <div key={product.id} className="product-card-wrapper">
               <ProductCard product={product} />

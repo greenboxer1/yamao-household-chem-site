@@ -54,12 +54,12 @@ const PromotionsPage = () => {
         <MDBRow className="mb-4 promo-banners-row">
           {banners.banner1Url && (
             <MDBCol md={banners.banner2Url ? "6" : "12"} className="mb-3 mb-md-0 promo-banner-col">
-              <img src={banners.banner1Url} alt="Promotional Banner 1" className="img-fluid promo-banner-image" />
+              <img src={banners.banner1Url} alt="Promotional Banner 1" className="img-fluid promo-banner-image rounded-3" />
             </MDBCol>
           )}
           {banners.banner2Url && (
             <MDBCol md={banners.banner1Url ? "6" : "12"} className="promo-banner-col">
-              <img src={banners.banner2Url} alt="Promotional Banner 2" className="img-fluid promo-banner-image" />
+              <img src={banners.banner2Url} alt="Promotional Banner 2" className="img-fluid promo-banner-image rounded-3" />
             </MDBCol>
           )}
           {!banners.banner1Url && !banners.banner2Url && (

@@ -23,6 +23,12 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
+.products-list-horizontal.dragging-scroll {
+  cursor: grabbing;
+  scroll-behavior: auto; /* Override smooth scroll during drag for responsiveness */
+  user-select: none;
+}
+
 .product-card-wrapper {
   flex: 0 0 auto; /* Prevent shrinking/growing */
   width: 240px; /* Adjust as per your ProductCard's actual width */
