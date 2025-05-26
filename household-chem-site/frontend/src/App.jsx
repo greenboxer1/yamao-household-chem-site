@@ -10,6 +10,7 @@ import StoresPage from './pages/StoresPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { FilterProvider } from './context/FilterContext';
 import './App.css';
+import AdminCredentials from './components/admin/AdminCredentials';
 
 // Main App Component
 const App = () => {

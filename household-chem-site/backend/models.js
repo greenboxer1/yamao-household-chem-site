@@ -58,6 +58,14 @@ Admin.beforeCreate(async (admin) => {
   admin.password = await bcrypt.hash(admin.password, salt);
 });
 
+// Hash password before updating if it's changed
+Admin.beforeUpdate(async (admin) => {
+  if (admin.changed('password')) {
+    const salt = await bcrypt.genSalt(10);
+    admin.password = await bcrypt.hash(admin.password, salt);
+  }
+});
+
 Admin.prototype.validPassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };

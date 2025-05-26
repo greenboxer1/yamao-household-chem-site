@@ -131,6 +131,12 @@ const AdminLayout = () => {
                   Контакты
                 </MDBNavbarLink>
               </MDBNavbarItem>
+              <MDBNavbarItem>
+                <MDBNavbarLink active={currentPath === '/admin/credentials'} tag={Link} to="/admin/credentials">
+                  <MDBIcon icon="key" className="me-1" /> 
+                  Смена данных
+                </MDBNavbarLink>
+              </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>
         </MDBContainer>

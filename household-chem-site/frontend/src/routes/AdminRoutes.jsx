@@ -6,6 +6,7 @@ import ProductManagement from '../components/admin/ProductManagement';
 import Categories from '../components/admin/Categories';
 import BannerManagement from '../components/admin/BannerManagement';
 import ContactInfoManagement from '../components/admin/ContactInfoManagement';
+import AdminCredentials from '../components/admin/AdminCredentials';
 
 const AdminRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AdminRoutes = () => {
         <Route path="categories" element={<Categories />} />
         <Route path="banners" element={<BannerManagement />} />
         <Route path="contact-info" element={<ContactInfoManagement />} />
+        <Route path="credentials" element={<AdminCredentials />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

@@ -584,4 +584,56 @@ router.delete('/admin/products/:id', async (req, res) => {
   }
 });
 
+// New route to update admin credentials
+router.put('/admin/credentials', auth, async (req, res) => {
+  try {
+    const { newUsername, newPassword, confirmPassword } = req.body;
+    const admin = req.admin; // Admin object is attached by the auth middleware
+
+    if (!admin) {
+      return res.status(404).json({ error: 'Admin user not found.' });
+    }
+
+    let updatedFields = {};
+
+    // Update username if provided and different
+    if (newUsername && newUsername !== admin.username) {
+      // Check if the new username is already taken by another admin (if multiple admins are possible)
+      // For a single admin system, this check might be less critical but good for robustness
+      const existingAdmin = await Admin.findOne({ where: { username: newUsername } });
+      if (existingAdmin && existingAdmin.id !== admin.id) {
+        return res.status(400).json({ error: 'Username already taken.' });
+      }
+      updatedFields.username = newUsername;
+    }
+
+    // Update password if provided
+    if (newPassword) {
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({ error: 'Passwords do not match.' });
+      }
+      if (newPassword.length < 6) { // Example: Enforce minimum password length
+        return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+      }
+      updatedFields.password = newPassword; // The beforeUpdate hook in model.js will hash it
+    }
+
+    if (Object.keys(updatedFields).length === 0) {
+      return res.status(400).json({ error: 'No changes provided.' });
+    }
+
+    await admin.update(updatedFields);
+
+    // If password was changed, a new token might be desired, but for simplicity, we'll let the user re-login if session invalidation is strict.
+    // Or, generate and send a new token if the session should persist seamlessly.
+    // const newToken = generateAuthToken(admin);
+
+    res.json({ message: 'Credentials updated successfully.'/*, token: newToken (if sending new token) */ });
+
+  } catch (error) {
+    console.error('Error updating admin credentials:', error);
+    res.status(500).json({ error: 'Failed to update credentials.' });
+  }
+});
+
 module.exports = router;
