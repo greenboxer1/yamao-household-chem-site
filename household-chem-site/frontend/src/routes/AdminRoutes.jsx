@@ -5,6 +5,7 @@ import AdminLayout from '../components/admin/AdminLayout';
 import ProductManagement from '../components/admin/ProductManagement';
 import Categories from '../components/admin/Categories';
 import BannerManagement from '../components/admin/BannerManagement';
+import ContactInfoManagement from '../components/admin/ContactInfoManagement';
 
 const AdminRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AdminRoutes = () => {
         <Route path="products" element={<ProductManagement />} />
         <Route path="categories" element={<Categories />} />
         <Route path="banners" element={<BannerManagement />} />
+        <Route path="contact-info" element={<ContactInfoManagement />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

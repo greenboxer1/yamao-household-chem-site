@@ -87,18 +87,18 @@ const MainLayout = ({ children, contactInfo }) => {
 
           {/* Desktop Contact Info */}
           <div className={`${styles.headerContacts} d-none d-lg-flex align-items-center`}>
-            <a href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} className={`${styles.contactLink} ${styles.phoneLink} me-3`}>
+            <a href={`tel:${contactInfo.phone?.replace(/\s+/g, '')}`} className={`${styles.contactLink} ${styles.phoneLink} me-3`}>
               <MDBIcon fas icon="phone-alt" className="me-2" />
               <span>{contactInfo.phone}</span>
             </a>
-            <a href="https://t.me/your_username" target="_blank" rel="noopener noreferrer" className={`${styles.contactLink} ${styles.telegramLink}`} aria-label="Telegram">
+            <a href={contactInfo.telegramUrl || "#!"} target="_blank" rel="noopener noreferrer" className={`${styles.contactLink} ${styles.telegramLink}`} aria-label="Telegram">
               <MDBIcon fab icon="telegram-plane" size="lg" />
             </a>
           </div>
 
           {/* Mobile Phone Button */}
           <div className={`${styles.phoneButtonContainerMobile} d-lg-none ms-auto`}>
-            <MDBBtn tag="a" href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} color="primary" size="sm" className={`${styles.phoneButtonMobile} text-nowrap`}>
+            <MDBBtn tag="a" href={`tel:${contactInfo.phone?.replace(/\s+/g, '')}`} color="primary" size="sm" className={`${styles.phoneButtonMobile} text-nowrap`}>
               <MDBIcon fas icon="phone-alt" />
             </MDBBtn>
           </div>
@@ -122,7 +122,7 @@ const MainLayout = ({ children, contactInfo }) => {
                 {/* Changed justify-content-lg-start to justify-content-center */}
                 <div className="d-flex align-items-center justify-content-center mb-3">
                   <MDBIcon icon="phone" className="me-2 text-primary" />
-                  <a href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} className={`text-dark text-decoration-none ${styles.footerLink}`}>{contactInfo.phone}</a>
+                  <a href={`tel:${contactInfo.phone?.replace(/\s+/g, '')}`} className={`text-dark text-decoration-none ${styles.footerLink}`}>{contactInfo.phone}</a>
                 </div>
                 {/* Changed justify-content-lg-start to justify-content-center */}
                 <div className="d-flex align-items-center justify-content-center mb-3">
@@ -150,9 +150,9 @@ const MainLayout = ({ children, contactInfo }) => {
               <h5 className="text-uppercase fw-bold mb-4">Мы в соцсетях</h5>
               {/* Changed justify-content-lg-start to justify-content-center */}
               <div className="d-flex justify-content-center">
-                <a href={contactInfo.socialMedia.vk || "#!"} className={`text-dark me-3 ${styles.footerLink}`} target="_blank" rel="noopener noreferrer"><MDBIcon fab icon="vk" size="2x" /></a>
-                <a href={contactInfo.socialMedia.telegram || "#!"} className={`text-dark me-3 ${styles.footerLink}`} target="_blank" rel="noopener noreferrer"><MDBIcon fab icon="telegram-plane" size="2x" /></a>
-                <a href={contactInfo.socialMedia.whatsapp || "#!"} className={`text-dark ${styles.footerLink}`} target="_blank" rel="noopener noreferrer"><MDBIcon fab icon="whatsapp" size="2x" /></a>
+                <a href={contactInfo.vkUrl || "#!"} className={`text-dark me-3 ${styles.footerLink}`} target="_blank" rel="noopener noreferrer"><MDBIcon fab icon="vk" size="2x" /></a>
+                <a href={contactInfo.telegramUrl || "#!"} className={`text-dark me-3 ${styles.footerLink}`} target="_blank" rel="noopener noreferrer"><MDBIcon fab icon="telegram-plane" size="2x" /></a>
+                <a href={contactInfo.whatsappUrl || "#!"} className={`text-dark ${styles.footerLink}`} target="_blank" rel="noopener noreferrer"><MDBIcon fab icon="whatsapp" size="2x" /></a>
               </div>
             </MDBCol>
           </MDBRow>

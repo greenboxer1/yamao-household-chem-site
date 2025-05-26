@@ -125,6 +125,12 @@ const AdminLayout = () => {
                   Баннеры
                 </MDBNavbarLink>
               </MDBNavbarItem>
+              <MDBNavbarItem>
+                <MDBNavbarLink active={currentPath === '/admin/contact-info'} tag={Link} to="/admin/contact-info">
+                  <MDBIcon icon="address-book" className="me-1" /> 
+                  Контакты
+                </MDBNavbarLink>
+              </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>
         </MDBContainer>

@@ -26,6 +26,7 @@ const upload = multer({ storage });
 // Data directory and file for promotional banners
 const dataDir = path.join(__dirname, 'data');
 const bannersFilePath = path.join(dataDir, 'promotional_banners.json');
+const contactInfoFilePath = path.join(dataDir, 'contactInfo.json');
 
 // Ensure data directory exists
 if (!fs.existsSync(dataDir)) {
@@ -58,10 +59,48 @@ const writeBannersData = (data) => {
   }
 };
 
+// Helper function to read contact info data
+const readContactInfoData = () => {
+  if (!fs.existsSync(contactInfoFilePath)) {
+    // Create default contact info file if it doesn't exist
+    const defaultContactInfo = {
+      phone: "",
+      email: "",
+      vkUrl: "",
+      telegramUrl: "",
+      whatsappUrl: ""
+    };
+    fs.writeFileSync(contactInfoFilePath, JSON.stringify(defaultContactInfo, null, 2));
+    return defaultContactInfo;
+  }
+  try {
+    const data = fs.readFileSync(contactInfoFilePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading contact info file:', error);
+    return { phone: "", email: "", vkUrl: "", telegramUrl: "", whatsappUrl: "" }; // Fallback
+  }
+};
+
+// Helper function to write contact info data
+const writeContactInfoData = (data) => {
+  try {
+    fs.writeFileSync(contactInfoFilePath, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('Error writing contact info file:', error);
+  }
+};
+
 // --- Public Route for Promotional Banners ---
 router.get('/promotional-banners', (req, res) => {
   const banners = readBannersData();
   res.json(banners);
+});
+
+// --- Public Route for Contact Info ---
+router.get('/contact-info', (req, res) => {
+  const contactInfo = readContactInfoData();
+  res.json(contactInfo);
 });
 
 // Admin login
@@ -392,6 +431,34 @@ router.post('/admin/promotional-banners/upload/slot2', auth, upload.single('bann
   } catch (error) {
     console.error('Error uploading Banner 2:', error);
     res.status(500).json({ error: 'Failed to upload Banner 2.' });
+  }
+});
+
+// --- Admin Route for Contact Info ---
+router.put('/admin/contact-info', async (req, res) => { 
+  try {
+    const { phone, email, vkUrl, telegramUrl, whatsappUrl } = req.body;
+    
+    // Basic validation (can be more extensive)
+    if (typeof phone !== 'string' || typeof email !== 'string' || 
+        typeof vkUrl !== 'string' || typeof telegramUrl !== 'string' || 
+        typeof whatsappUrl !== 'string') {
+      return res.status(400).json({ error: 'All contact fields must be strings.' });
+    }
+
+    const newContactInfo = {
+      phone,
+      email,
+      vkUrl,
+      telegramUrl,
+      whatsappUrl
+    };
+
+    writeContactInfoData(newContactInfo);
+    res.json({ message: 'Contact information updated successfully.', contactInfo: newContactInfo });
+  } catch (error) {
+    console.error('Error updating contact information:', error);
+    res.status(500).json({ error: 'Failed to update contact information.' });
   }
 });
 

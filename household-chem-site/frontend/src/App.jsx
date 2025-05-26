@@ -14,11 +14,42 @@ import './App.css';
 // Main App Component
 const App = () => {
   const [categories, setCategories] = useState([]);
+  const [contactInfo, setContactInfo] = useState({ 
+    phone: '',
+    email: '',
+    vkUrl: '',
+    telegramUrl: '',
+    whatsappUrl: ''
+  });
+  const [loadingContactInfo, setLoadingContactInfo] = useState(true);
+  const [errorContactInfo, setErrorContactInfo] = useState(null);
 
   useEffect(() => {
     fetch('/api/categories')
       .then(res => res.json())
-      .then(data => setCategories(data));
+      .then(data => setCategories(data))
+      .catch(err => console.error("Failed to fetch categories", err));
+
+    // Fetch contact information
+    fetch('/api/contact-info')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setContactInfo(data);
+        setErrorContactInfo(null);
+      })
+      .catch(err => {
+        console.error("Failed to fetch contact info:", err);
+        setErrorContactInfo('Не удалось загрузить контактную информацию.');
+        // Keep default/empty contact info if fetch fails
+      })
+      .finally(() => {
+        setLoadingContactInfo(false);
+      });
   }, []);
 
   // Loading component for Suspense
@@ -38,19 +69,24 @@ const App = () => {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/admin');
     
-    // Define contact information (can be fetched or configured elsewhere later)
-    const contactInfo = {
-      phone: '+7 (999) 123-45-67',
-      email: 'info@yamao.example.com',
-      socialMedia: {
-        vk: '#!',
-        telegram: 'https://t.me/your_yamao_channel',
-        whatsapp: '#!'
-      }
-    };
-
     if (isAdminRoute) {
       return children;
+    }
+
+    if (loadingContactInfo) {
+      return (
+        <div className="d-flex justify-content-center align-items-center vh-100">
+          <MDBSpinner color="primary">
+            <span className="visually-hidden">Loading contact info...</span>
+          </MDBSpinner>
+        </div>
+      );
+    }
+
+    if (errorContactInfo) {
+      // Optionally, render a specific error message or fallback UI
+      // For now, we'll proceed with potentially empty contactInfo in MainLayout
+      console.warn("Rendering MainLayout with potentially empty or default contact info due to fetch error.");
     }
     
     return (
