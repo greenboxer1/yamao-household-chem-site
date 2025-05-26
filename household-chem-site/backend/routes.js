@@ -189,6 +189,81 @@ router.get('/products', async (req, res) => {
     }
 });
 
+// Category management routes
+router.get('/admin/categories', auth, async (req, res) => {
+  try {
+    const categories = await Category.findAll({
+      order: [['name', 'ASC']]
+    });
+    res.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({ error: 'Failed to fetch categories' });
+  }
+});
+
+router.post('/admin/categories', auth, async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ error: 'Category name is required' });
+    }
+    
+    const category = await Category.create({ name });
+    res.status(201).json(category);
+  } catch (error) {
+    console.error('Error creating category:', error);
+    res.status(500).json({ error: 'Failed to create category' });
+  }
+});
+
+router.put('/admin/categories/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    
+    if (!name) {
+      return res.status(400).json({ error: 'Category name is required' });
+    }
+    
+    const category = await Category.findByPk(id);
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    
+    await category.update({ name });
+    res.json(category);
+  } catch (error) {
+    console.error('Error updating category:', error);
+    res.status(500).json({ error: 'Failed to update category' });
+  }
+});
+
+router.delete('/admin/categories/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findByPk(id);
+    
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    
+    // Check if category is being used by any products
+    const productsCount = await Product.count({ where: { CategoryId: id } });
+    if (productsCount > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete category with associated products' 
+      });
+    }
+    
+    await category.destroy();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    res.status(500).json({ error: 'Failed to delete category' });
+  }
+});
+
 // Admin protected routes
 router.use(auth);
 

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from '../components/admin/LoginForm';
 import AdminLayout from '../components/admin/AdminLayout';
 import ProductManagement from '../components/admin/ProductManagement';
+import Categories from '../components/admin/Categories';
 
 const AdminRoutes = () => {
   return (
@@ -11,6 +12,7 @@ const AdminRoutes = () => {
       <Route path="/" element={<AdminLayout />}>
         <Route index element={<Navigate to="products" replace />} />
         <Route path="products" element={<ProductManagement />} />
+        <Route path="categories" element={<Categories />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

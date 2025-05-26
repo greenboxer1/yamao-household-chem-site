@@ -108,9 +108,15 @@ const AdminLayout = () => {
           <MDBCollapse navbar isOpen={isOpen} className="justify-content-end">
             <MDBNavbarNav className="mb-2 mb-lg-0">
               <MDBNavbarItem>
-                <MDBNavbarLink active aria-current="page" tag={Link} to="/admin/products">
+                <MDBNavbarLink active={currentPath === '/admin/products'} tag={Link} to="/admin/products">
                   <MDBIcon icon="box" className="me-1" />
                   Товары
+                </MDBNavbarLink>
+              </MDBNavbarItem>
+              <MDBNavbarItem>
+                <MDBNavbarLink active={currentPath === '/admin/categories'} tag={Link} to="/admin/categories">
+                  <MDBIcon icon="tags" className="me-1" />
+                  Категории
                 </MDBNavbarLink>
               </MDBNavbarItem>
             </MDBNavbarNav>
