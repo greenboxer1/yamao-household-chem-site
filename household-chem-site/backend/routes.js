@@ -6,6 +6,7 @@ const { auth, generateAuthToken } = require('./auth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const rateLimit = require('express-rate-limit');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -32,6 +33,15 @@ const contactInfoFilePath = path.join(dataDir, 'contactInfo.json');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
+
+// Rate limiter for login attempts
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: 'Too many login attempts from this IP, please try again after 15 minutes',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 // Helper function to read banners data
 const readBannersData = () => {
@@ -104,7 +114,7 @@ router.get('/contact-info', (req, res) => {
 });
 
 // Admin login
-router.post('/admin/login', async (req, res) => {
+router.post('/admin/login', loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     const admin = await Admin.findOne({ where: { username } });

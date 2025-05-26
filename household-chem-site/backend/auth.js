@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { Admin } = require('./models');
 
-const JWT_SECRET = 'your-secret-key'; // In production, use environment variable
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = async (req, res, next) => {
   try {
