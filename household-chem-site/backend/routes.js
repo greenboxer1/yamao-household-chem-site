@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Product, Category, Admin } = require('./models');
+const { sequelize, Product, Category, Admin } = require('./models');
 const { Op, Sequelize } = require('sequelize');
 const { auth, generateAuthToken } = require('./auth');
 const multer = require('multer');
@@ -240,27 +240,46 @@ router.put('/admin/categories/:id', auth, async (req, res) => {
 });
 
 router.delete('/admin/categories/:id', auth, async (req, res) => {
+  const transaction = await sequelize.transaction();
+  
   try {
     const { id } = req.params;
-    const category = await Category.findByPk(id);
+    const category = await Category.findByPk(id, { transaction });
     
     if (!category) {
+      await transaction.rollback();
       return res.status(404).json({ error: 'Category not found' });
     }
     
-    // Check if category is being used by any products
-    const productsCount = await Product.count({ where: { CategoryId: id } });
-    if (productsCount > 0) {
-      return res.status(400).json({ 
-        error: 'Cannot delete category with associated products' 
-      });
-    }
+    // Find all products with this category
+    const products = await Product.findAll({
+      where: { CategoryId: id },
+      transaction
+    });
     
-    await category.destroy();
-    res.json({ success: true });
+    // Update all products to remove the category reference
+    await Promise.all(products.map(product => 
+      product.update({ CategoryId: null }, { transaction })
+    ));
+    
+    // Now it's safe to delete the category
+    await category.destroy({ transaction });
+    
+    // Commit the transaction
+    await transaction.commit();
+    
+    res.json({ 
+      success: true, 
+      updatedProductsCount: products.length
+    });
   } catch (error) {
+    // If anything fails, rollback the transaction
+    await transaction.rollback();
     console.error('Error deleting category:', error);
-    res.status(500).json({ error: 'Failed to delete category' });
+    res.status(500).json({ 
+      error: 'Failed to delete category',
+      details: error.message 
+    });
   }
 });
 
