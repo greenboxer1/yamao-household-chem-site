@@ -139,10 +139,17 @@ const ProductManagement = () => {
             return { 
               ...product, 
               categoryId: value,
-              Category: category 
+              Category: category || product.Category // Preserve existing category if not found
             };
           }
-          return { ...product, [field]: value };
+          // For other fields, preserve the existing category
+          return { 
+            ...product, 
+            [field]: value,
+            // Make sure categoryId and Category are preserved
+            categoryId: product.categoryId || product.Category?.id,
+            Category: product.Category || categories.find(c => c.id === product.categoryId)
+          };
         }
         return product;
       })
@@ -182,7 +189,8 @@ const ProductManagement = () => {
       formData.append('name', product.name);
       formData.append('price', product.price);
       formData.append('weight', product.weight || '');
-      formData.append('categoryId', categoryId);
+      // Используем CategoryId с большой буквы, как ожидает бэкенд
+      formData.append('CategoryId', categoryId);
       
       if (product.discountPrice) {
         formData.append('discountPrice', product.discountPrice);
@@ -196,14 +204,20 @@ const ProductManagement = () => {
         formData.append('image', product.image);
       }
 
-      await api.post('/admin/products', formData, {
+      const response = await api.post('/admin/products', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
-      // Refresh products after update
-      fetchProducts();
+      // Update the local state with the updated product data from the server
+      setProducts(prev => prev.map(p => 
+        p.id === product.id 
+          ? { ...response.data, Category: categories.find(c => c.id === response.data.categoryId) }
+          : p
+      ));
+      
+      setError('');
     } catch (error) {
       console.error('Error updating product:', error);
       setError('Ошибка при обновлении товара: ' + (error.response?.data?.error || error.message));
@@ -221,7 +235,8 @@ const ProductManagement = () => {
       formData.append('name', newProduct.name);
       formData.append('price', newProduct.price);
       formData.append('weight', newProduct.weight);
-      formData.append('categoryId', newProduct.categoryId);
+      // Используем CategoryId с большой буквы, как ожидает бэкенд
+      formData.append('CategoryId', newProduct.categoryId);
       
       if (newProduct.discountPrice) {
         formData.append('discountPrice', newProduct.discountPrice);
@@ -231,13 +246,21 @@ const ProductManagement = () => {
         formData.append('image', newProduct.image);
       }
 
-      await api.post('/admin/products', formData, {
+      const response = await api.post('/admin/products', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
-      // Reset form and refresh products
+      // Add the new product to the local state with the category
+      const newProductWithCategory = {
+        ...response.data,
+        Category: categories.find(c => c.id === response.data.categoryId)
+      };
+      
+      setProducts(prev => [...prev, newProductWithCategory]);
+      
+      // Reset form
       setNewProduct({
         name: '',
         price: '',
@@ -248,7 +271,7 @@ const ProductManagement = () => {
       });
       setImagePreview('');
       setIsAdding(false);
-      fetchProducts();
+      setError('');
     } catch (error) {
       console.error('Error adding product:', error);
       setError('Ошибка при добавлении товара: ' + (error.response?.data?.error || error.message));

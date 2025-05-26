@@ -284,22 +284,30 @@ router.get('/admin/products', async (req, res) => {
 // Create or update product
 router.post('/admin/products', upload.single('image'), async (req, res) => {
   try {
-    const { id, name, price, discountPrice, weight, CategoryId } = req.body;
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    console.log('File:', req.file);
+    
+    const { id, name, price, discountPrice, weight, categoryId, CategoryId } = req.body;
+    // Используем CategoryId или categoryId (поддерживаем оба варианта)
+    const finalCategoryId = CategoryId || categoryId;
     const image = req.file ? `/images/${req.file.filename}` : null;
     
+    // Prepare product data with proper type conversion
     const productData = {
       name,
       price: parseFloat(price),
       weight,
-      CategoryId: parseInt(CategoryId),
+      ...(finalCategoryId && { CategoryId: parseInt(finalCategoryId) }), // Используем finalCategoryId
       ...(discountPrice && { discountPrice: parseFloat(discountPrice) }),
       ...(image && { image })
     };
+    
+    console.log('Processed product data:', JSON.stringify(productData, null, 2));
 
     let product;
     if (id) {
       // Update existing product
-      product = await Product.findByPk(id);
+      product = await Product.findByPk(id, { include: [Category] });
       if (!product) {
         return res.status(404).json({ error: 'Product not found' });
       }
@@ -314,7 +322,22 @@ router.post('/admin/products', upload.single('image'), async (req, res) => {
         }
       }
       
+      // Update the product with new data
       await product.update(productData);
+      
+      // If category was provided, ensure the association is updated
+      if (finalCategoryId) {
+        console.log('Updating category to:', finalCategoryId);
+        const category = await Category.findByPk(parseInt(finalCategoryId));
+        if (category) {
+          console.log('Found category:', category.name);
+          await product.setCategory(category);
+          // Обновляем объект продукта с новой категорией для ответа
+          product.Category = category;
+        } else {
+          console.log('Category not found with id:', finalCategoryId);
+        }
+      }
     } else {
       // Create new product
       product = await Product.create(productData);
