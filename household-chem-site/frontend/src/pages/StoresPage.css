@@ -1,0 +1,89 @@
+.stores-page {
+  background-color: #f8f9fa;
+}
+
+.store-list-container {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  height: 100%;
+}
+
+.store-list {
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+}
+
+.store-item {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-left: 3px solid transparent;
+  border-radius: 0 !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.store-item:last-child {
+  border-bottom: none !important;
+}
+
+.store-item:hover {
+  background-color: #f8f9fa;
+  border-left: 3px solid #0d6efd;
+}
+
+.store-item.active {
+  background-color: #f0f7ff;
+  border-left: 3px solid #0d6efd;
+}
+
+.store-item h5 {
+  font-weight: 600;
+  color: #212529;
+}
+
+.store-details {
+  background: white;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.map-container {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  height: 100%;
+  min-height: 600px;
+}
+
+/* Custom scrollbar for store list */
+.store-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.store-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.store-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.store-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .map-container {
+    min-height: 400px;
+    margin-top: 1.5rem;
+  }
+  
+  .store-list-container {
+    margin-bottom: 1.5rem;
+  }
+}
