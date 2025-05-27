@@ -1,3 +1,5 @@
+#!/bin/bash
+set -e
 git pull origin main
 export NVM_DIR="$HOME/.nvm"
 source "$NVM_DIR/nvm.sh"
