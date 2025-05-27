@@ -583,7 +583,7 @@ const ProductManagement = () => {
                           }}
                           onMouseEnter={() => {
                             hoverTimeout.current = setTimeout(() => {
-                              setHoveredImage(`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`);
+                              setHoveredImage(product.image.startsWith('http') ? product.image : `${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`);
                             }, 200);
                           }}
                           onMouseLeave={() => {
@@ -594,7 +594,7 @@ const ProductManagement = () => {
                           }}
                         >
                           <img 
-                            src={`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`} 
+                            src={product.image.startsWith('http') ? product.image : `${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`} 
                             alt={product.name}
                             style={{
                               width: '100%',
