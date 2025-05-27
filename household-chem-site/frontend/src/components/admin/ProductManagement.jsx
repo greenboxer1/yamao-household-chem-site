@@ -572,12 +572,9 @@ const ProductManagement = () => {
                   <tr key={product.id}>
                     <td>{product.id}</td>
                     <td>
-                      {product.image && (
-                        <div 
+                      {product.image ? (
+                        <div
                           style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
                             width: '100px',
                             height: '100px',
                             padding: '8px',
@@ -610,6 +607,10 @@ const ProductManagement = () => {
                               e.target.style.display = 'none';
                             }}
                           />
+                        </div>
+                      ) : (
+                        <div style={{ width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6c757d' }}>
+                          Нет фото
                         </div>
                       )}
                     </td>
@@ -701,7 +702,9 @@ const ProductManagement = () => {
             border: '1px solid #dee2e6',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            minWidth: '100px',
+            minHeight: '100px'
           }}
         >
           <img 
@@ -719,7 +722,8 @@ const ProductManagement = () => {
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
             }}
             onError={(e) => {
-              e.target.style.display = 'none';
+              // Скрываем превью, если изображение не загрузилось
+              setHoveredImage(null);
             }}
           />
         </div>

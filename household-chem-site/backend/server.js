@@ -43,15 +43,30 @@ if (!require('fs').existsSync(indexPath)) {
   process.exit(1);
 }
 
-// Serve static files
-app.use(express.static(frontendPath));
-
-// Log static file requests
+// Serve static files with error handling
 app.use((req, res, next) => {
-  if (!req.path.startsWith('/api/')) {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  if (req.path.startsWith('/api/')) {
+    return next();
   }
-  next();
+  
+  // Skip logging for known non-existent files
+  if (req.path.includes('placeholder.jpg')) {
+    return res.status(404).end();
+  }
+  
+  // Log the request
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  
+  // Check if file exists before serving
+  const filePath = path.join(frontendPath, req.path);
+  require('fs').stat(filePath, (err, stat) => {
+    if (err || !stat.isFile()) {
+      // Skip to next middleware if file doesn't exist
+      return next();
+    }
+    // Serve the file if it exists
+    express.static(frontendPath)(req, res, next);
+  });
 });
 
 // Handle SPA (Single Page Application) routing
