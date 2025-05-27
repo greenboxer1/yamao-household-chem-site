@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const routes = require('./routes');
 const { sequelize } = require('./models');
+const { startBackupProcess } = require('./db_backups');
 
 const app = express();
 const port = 3000;
@@ -97,6 +98,15 @@ sequelize.sync().then(async () => {
   }
 });
 
-app.listen(port, () => {
+// Start the server and database backup process
+let stopBackupProcess;
+
+const server = app.listen(port, async () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
+  
+  try {
+    stopBackupProcess = await startBackupProcess();
+  } catch (err) {
+    console.error('Failed to start backup process:', err);
+  }
 });
