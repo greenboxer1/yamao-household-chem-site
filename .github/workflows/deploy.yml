@@ -18,5 +18,4 @@ jobs:
           port: 22
           script: |
             cd ~/yamao-household-chem-site
-            mkdir testtesttest
             bash ./restart.sh
