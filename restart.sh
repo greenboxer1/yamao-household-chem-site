@@ -7,4 +7,5 @@ source "$NVM_DIR/nvm.sh"
 nvm use 20
 cd ~/yamao-household-chem-site/household-chem-site/frontend
 vite build
+cd ~/yamao-household-chem-site/household-chem-site/backend
 pm2 start server
