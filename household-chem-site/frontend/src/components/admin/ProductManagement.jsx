@@ -608,7 +608,7 @@ const ProductManagement = () => {
                             }}
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = '/placeholder.jpg';
+                              e.target.src = '/images/placeholder.svg';
                             }}
                           />
                         </div>
@@ -721,7 +721,7 @@ const ProductManagement = () => {
             }}
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = '/placeholder.jpg';
+              e.target.src = '/images/placeholder.svg';
             }}
           />
         </div>
