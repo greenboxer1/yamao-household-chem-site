@@ -596,6 +596,9 @@ const ProductManagement = () => {
                           <img 
                             src={product.image.startsWith('http') ? product.image : `${process.env.REACT_APP_API_URL || 'http://localhost:3000'}${product.image}`} 
                             alt={product.name}
+                            onLoad={(e) => {
+                              console.log('Изображение загружено:', e.target.src);
+                            }}
                             style={{
                               width: '100%',
                               height: '100%',
@@ -604,7 +607,10 @@ const ProductManagement = () => {
                               border: '1px solid #dee2e6'
                             }}
                             onError={(e) => {
-                              e.target.style.display = 'none';
+                              console.error('Ошибка загрузки изображения:', product.image, e);
+                              // Заменяем изображение на текст с ошибкой
+                              const parent = e.target.parentNode;
+                              parent.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #dc3545; font-size: 12px; text-align: center; padding: 5px;">Ошибка загрузки изображения</div>';
                             }}
                           />
                         </div>
