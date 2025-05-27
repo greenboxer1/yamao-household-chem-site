@@ -37,8 +37,7 @@ const PromotionsDiscountedProductList = () => {
         const discounted = allProducts.filter(
           (product) =>
             product.discountPrice &&
-            parseFloat(product.discountPrice) > 0 &&
-            parseFloat(product.discountPrice) < parseFloat(product.price)
+            parseFloat(product.discountPrice) > 0
         );
         setProducts(discounted);
         setError('');
