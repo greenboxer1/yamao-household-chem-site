@@ -583,7 +583,7 @@ const ProductManagement = () => {
                           }}
                           onMouseEnter={() => {
                             hoverTimeout.current = setTimeout(() => {
-                              setHoveredImage(product.image.startsWith('http') ? product.image : `/${product.image}`);
+                              setHoveredImage(product.image);
                             }, 200);
                           }}
                           onMouseLeave={() => {
@@ -594,7 +594,7 @@ const ProductManagement = () => {
                           }}
                         >
                           <img 
-                            src={product.image.startsWith('http') ? product.image : `/${product.image}`} 
+                            src={product.image} 
                             alt={product.name}
                             onLoad={(e) => {
                               console.log('Изображение загружено:', e.target.src);
