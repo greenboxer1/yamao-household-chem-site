@@ -607,8 +607,7 @@ const ProductManagement = () => {
                               border: '1px solid #dee2e6'
                             }}
                             onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = '/images/placeholder.svg';
+                              e.target.style.display = 'none';
                             }}
                           />
                         </div>
@@ -720,8 +719,7 @@ const ProductManagement = () => {
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
             }}
             onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = '/images/placeholder.svg';
+              e.target.style.display = 'none';
             }}
           />
         </div>
