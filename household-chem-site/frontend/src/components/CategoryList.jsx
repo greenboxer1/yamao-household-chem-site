@@ -23,9 +23,12 @@ const CategoryList = memo(({ categories }) => {
 
   // Memoized handlers
   const handleCategorySelect = useCallback((categoryId) => {
-    setSelectedCategory(categoryId);
-    // Reset search when selecting a category
-    setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'instant' }); // Scroll to top instantly
+    setTimeout(() => {
+      setSelectedCategory(categoryId);
+      // Reset search when selecting a category
+      setSearchQuery('');
+    }, 0);
   }, [setSelectedCategory, setSearchQuery]);
 
   const sortOptions = [
