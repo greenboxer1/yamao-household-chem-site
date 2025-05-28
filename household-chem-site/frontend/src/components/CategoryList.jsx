@@ -216,12 +216,20 @@ const CategoryList = memo(({ categories }) => {
         <select
           className="form-select py-2"
           value={sortOrder}
-          onChange={e => setSortOrder(e.target.value)}
+          onChange={e => {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            setTimeout(() => {
+              setSortOrder(e.target.value);
+            }, 0);
+          }}
           onFocus={(e) => e.target.blur()} // Prevent focus to avoid mobile keyboard
           style={{ minHeight: '45px', fontSize: '1rem' }}
         >
           {sortOptions.map(option => (
-            <option key={option.value} value={option.value}>
+            <option 
+              key={option.value}
+              value={option.value}
+            >
               {option.text}
             </option>
           ))}
