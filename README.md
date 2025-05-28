@@ -40,7 +40,7 @@
 A default admin account is created automatically with the following credentials:
 
 - Username: `admin`
-- Password: `admin`
+- Password: `admin123`
 
 **Important:** Change these credentials after the first login for security.
 
