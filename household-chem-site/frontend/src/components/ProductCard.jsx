@@ -9,7 +9,7 @@ function ProductCard({ product }) {
           src={product.image} 
           position="top" 
           alt={product.name} 
-          className={`img-fluid ${styles.productCardImage}`}
+          className={`${styles.productCardImage}`}
         />
       </div>
       <MDBCardBody className={styles.productCardBody}>
