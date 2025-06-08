@@ -15,7 +15,6 @@
   max-height: 100%;
   object-fit: contain !important; /* Apply to the component itself */
   display: block; /* Make it behave like a block */
-  transition: transform var(--transition-base) ease-out; /* Use CSS variable for transition */
 }
 
 .productCardImage img {
@@ -27,9 +26,6 @@
   object-fit: contain !important;
 }
 
-.productCardImage:hover {
-  transform: scale(1.07);
-}
 
 .productCardBody {
   padding: var(--spacing-sm) var(--spacing-md); /* Use spacing variables */
